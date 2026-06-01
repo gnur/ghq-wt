@@ -16,6 +16,7 @@ var commands = []*cli.Command{
 	commandRoot,
 	commandCreate,
 	commandMigrate,
+	commandMigrateWorktree,
 }
 
 var commandGet = &cli.Command{
@@ -108,12 +109,13 @@ type commandDoc struct {
 }
 
 var commandDocs = map[string]commandDoc{
-	"get":     {"", "[-u] [-p] [--shallow] [--vcs <vcs>] [--look] [--silent] [--branch <branch>] [--no-recursive] [--bare] [--partial blobless|treeless] <repository URL>|<project>|<user>/<project>|<host>/<user>/<project>"},
-	"list":    {"", "[-p] [-e] [<query>]"},
-	"create":  {"", "<project>|<user>/<project>|<host>/<user>/<project>"},
-	"rm":      {"", "<project>|<user>/<project>|<host>/<user>/<project>"},
-	"root":    {"", "[-all]"},
-	"migrate": {"", "[-y] [--dry-run] <repository-directory>"},
+	"get":              {"", "[-u] [-p] [--shallow] [--vcs <vcs>] [--look] [--silent] [--branch <branch>] [--no-recursive] [--bare] [--partial blobless|treeless] <repository URL>|<project>|<user>/<project>|<host>/<user>/<project>"},
+	"list":             {"", "[-p] [-e] [<query>]"},
+	"create":           {"", "<project>|<user>/<project>|<host>/<user>/<project>"},
+	"rm":               {"", "<project>|<user>/<project>|<host>/<user>/<project>"},
+	"root":             {"", "[-all]"},
+	"migrate":          {"", "[-y] [--dry-run] <repository-directory>"},
+	"migrate-worktree": {"", "[--dry-run] <repository>"},
 }
 
 // Makes template conditionals to generate per-command documents.
@@ -154,5 +156,19 @@ var commandMigrate = &cli.Command{
 	Flags: []cli.Flag{
 		&cli.BoolFlag{Name: "y", Usage: "Skip confirmation prompt"},
 		&cli.BoolFlag{Name: "dry-run", Usage: "Show what would happen without moving"},
+	},
+}
+
+var commandMigrateWorktree = &cli.Command{
+	Name:  "migrate-worktree",
+	Usage: "Convert existing clone to worktree layout",
+	Description: `
+    Convert an existing git clone from standard layout (.git directory) to
+    the worktree layout (.bare/ + branch worktrees). The current branch
+    becomes the first worktree.`,
+	Action: doMigrateWorktree,
+	Flags: []cli.Flag{
+		&cli.BoolFlag{Name: "dry-run", Usage: "Show what would happen without migrating"},
+		&cli.BoolFlag{Name: "bare", Usage: "Match bare repository path"},
 	},
 }

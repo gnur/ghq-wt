@@ -103,6 +103,8 @@ func LocalRepositoryFromURL(remoteURL *url.URL, bare bool) (*LocalRepository, er
 	if localRepository != nil {
 		return localRepository, nil
 	}
+
+	// Check if a worktree layout already exists (base dir with .bare/)
 	var remoteURLStr = remoteURL.String()
 	if remoteURL.Scheme == "codecommit" {
 		remoteURLStr = remoteURL.Opaque
@@ -112,9 +114,21 @@ func LocalRepositoryFromURL(remoteURL *url.URL, bare bool) (*LocalRepository, er
 		return nil, err
 	}
 
+	fullPath := filepath.Join(prim, relPath)
+	bareDir := filepath.Join(fullPath, ".bare")
+	if fi, err := os.Stat(bareDir); err == nil && fi.IsDir() {
+		// Worktree layout exists — return the base path
+		return &LocalRepository{
+			FullPath:  fullPath,
+			RelPath:   relPath,
+			RootPath:  prim,
+			PathParts: pathParts,
+		}, nil
+	}
+
 	// No local repository found, returning new one
 	return &LocalRepository{
-		FullPath:  filepath.Join(prim, relPath),
+		FullPath:  fullPath,
 		RelPath:   relPath,
 		RootPath:  prim,
 		PathParts: pathParts,
@@ -191,6 +205,20 @@ func (repo *LocalRepository) Matches(pathQuery string) bool {
 // VCS returns VCSBackend of the repository
 func (repo *LocalRepository) VCS() (*VCSBackend, string) {
 	if repo.vcsBackend == nil {
+		// Check if this is a worktree (has .git file, not directory)
+		gitPath := filepath.Join(repo.FullPath, ".git")
+		if isGitFile(gitPath) {
+			repo.vcsBackend = GitBackend
+			repo.repoPath = repo.FullPath
+			return repo.vcsBackend, repo.RepoPath()
+		}
+		// Check if parent has .bare (worktree layout base dir)
+		bareDir := filepath.Join(repo.FullPath, ".bare")
+		if fi, err := os.Stat(bareDir); err == nil && fi.IsDir() {
+			repo.vcsBackend = GitBackend
+			repo.repoPath = repo.FullPath
+			return repo.vcsBackend, repo.RepoPath()
+		}
 		for _, dir := range repo.repoRootCandidates() {
 			backend := findVCSBackend(dir, "")
 			if backend != nil {
@@ -247,12 +275,26 @@ func findVCSBackend(fpath, vcs string) *VCSBackend {
 	if strings.HasSuffix(fpath, ".git") {
 		return GitBackend
 	}
+	// Check for .git file (worktree link) - treat as git repo
+	if gitPath := filepath.Join(fpath, ".git"); isGitFile(gitPath) {
+		return GitBackend
+	}
 	for _, d := range vcsContents {
 		if _, err := os.Stat(filepath.Join(fpath, d)); err == nil {
 			return vcsContentsMap[d]
 		}
 	}
 	return nil
+}
+
+// isGitFile checks if path is a file (not directory) containing a gitdir pointer,
+// which indicates a git worktree.
+func isGitFile(path string) bool {
+	fi, err := os.Lstat(path)
+	if err != nil {
+		return false
+	}
+	return fi.Mode().IsRegular()
 }
 
 func walkAllLocalRepositories(callback func(*LocalRepository)) error {
@@ -280,6 +322,10 @@ func walkLocalRepositories(vcs string, callback func(*LocalRepository)) error {
 		}
 		if !fi.IsDir() {
 			return nil
+		}
+		// Skip .bare directories (worktree layout bare repos)
+		if filepath.Base(fpath) == ".bare" {
+			return filepath.SkipDir
 		}
 		vcsBackend := findVCSBackend(fpath, vcs)
 		if vcsBackend == nil {

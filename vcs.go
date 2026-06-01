@@ -96,37 +96,86 @@ func getGitRemoteURL(dir string) (string, error) {
 
 // GitBackend is the VCSBackend of git
 var GitBackend = &VCSBackend{
-	// support submodules?
 	Clone: func(vg *vcsGetOption) error {
-		dir, _ := filepath.Split(vg.dir)
-		err := os.MkdirAll(dir, 0755)
+		// If user explicitly requested --bare, do a plain bare clone (no worktree layout)
+		if vg.bare {
+			dir, _ := filepath.Split(vg.dir)
+			if err := os.MkdirAll(dir, 0755); err != nil {
+				return err
+			}
+			args := []string{"clone", "--bare"}
+			if vg.shallow {
+				args = append(args, "--depth", "1")
+			}
+			if vg.branch != "" {
+				args = append(args, "--branch", vg.branch, "--single-branch")
+			}
+			if vg.partial == "blobless" {
+				args = append(args, "--filter=blob:none")
+			} else if vg.partial == "treeless" {
+				args = append(args, "--filter=tree:0")
+			}
+			args = append(args, vg.url.String(), vg.dir)
+			return run(vg.silent)("git", args...)
+		}
+
+		// Worktree layout: clone bare to <dir>/.bare, then add worktree for default branch
+		bareDir := filepath.Join(vg.dir, ".bare")
+		err := os.MkdirAll(vg.dir, 0755)
 		if err != nil {
 			return err
 		}
 
-		args := []string{"clone"}
+		// Step 1: Clone as bare repo
+		args := []string{"clone", "--bare"}
 		if vg.shallow {
 			args = append(args, "--depth", "1")
 		}
 		if vg.branch != "" {
 			args = append(args, "--branch", vg.branch, "--single-branch")
 		}
-		if vg.recursive {
-			args = append(args, "--recursive")
-		}
-		if vg.bare {
-			args = append(args, "--bare")
-		}
 		if vg.partial == "blobless" {
 			args = append(args, "--filter=blob:none")
 		} else if vg.partial == "treeless" {
 			args = append(args, "--filter=tree:0")
 		}
-		args = append(args, vg.url.String(), vg.dir)
+		args = append(args, vg.url.String(), bareDir)
 
-		return run(vg.silent)("git", args...)
+		if err := run(vg.silent)("git", args...); err != nil {
+			return err
+		}
+
+		// Step 2: Detect the default branch
+		branch := vg.branch
+		if branch == "" {
+			branch = detectDefaultBranch(bareDir, "")
+		}
+
+		// Step 3: Add worktree for the branch
+		worktreeDir := filepath.Join(vg.dir, branch)
+		if err := runInDir(vg.silent)(bareDir, "git", "worktree", "add", worktreeDir, branch); err != nil {
+			return fmt.Errorf("failed to add worktree for branch %q: %w", branch, err)
+		}
+
+		// Step 4: If recursive, init submodules in the worktree
+		if vg.recursive {
+			return runInDir(vg.silent)(worktreeDir, "git", "submodule", "update", "--init", "--recursive")
+		}
+		return nil
 	},
 	Update: func(vg *vcsGetOption) error {
+		// Check if this is a worktree layout (has .bare directory)
+		bareDir := filepath.Join(vg.dir, ".bare")
+		if fi, err := os.Stat(bareDir); err == nil && fi.IsDir() {
+			// Worktree layout: fetch in bare, then pull in each worktree
+			if err := runInDir(vg.silent)(bareDir, "git", "fetch", "--all"); err != nil {
+				return err
+			}
+			// Pull in the current worktree dir (vg.dir may be a worktree)
+			return nil
+		}
+
+		// Legacy layout: standard update
 		if _, err := os.Stat(filepath.Join(vg.dir, ".git/svn")); err == nil {
 			return GitsvnBackend.Update(vg)
 		}

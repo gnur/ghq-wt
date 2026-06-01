@@ -57,19 +57,29 @@ func isLinkedGitDir(dir string) (bool, string, error) {
 }
 
 // isWorktreeGitDir returns true if gitdirTarget looks like a worktree entry
-// (.git/worktrees/<name>) rather than a submodule (.git/modules/<name>).
+// (.git/worktrees/<name> or .bare/worktrees/<name>) rather than a submodule (.git/modules/<name>).
 func isWorktreeGitDir(gitdirTarget string) bool {
-	return strings.Contains(filepath.ToSlash(gitdirTarget), ".git/worktrees/")
+	normalized := filepath.ToSlash(gitdirTarget)
+	return strings.Contains(normalized, ".git/worktrees/") || strings.Contains(normalized, ".bare/worktrees/")
 }
 
 // hasLinkedWorktrees reports whether the Git repository at dir has any linked
-// worktrees (entries under .git/worktrees/).
-//
-// Known limitation: bare repos store worktrees in <bare-repo>/worktrees/
-// (no .git/ prefix). This check only looks at .git/worktrees/ and would
-// miss bare repo worktrees.
+// worktrees. Checks both .git/worktrees/ (standard layout) and .bare/worktrees/
+// (ghq worktree layout).
 func hasLinkedWorktrees(dir string) (bool, error) {
+	// Check standard .git/worktrees/
 	worktreesDir := filepath.Join(dir, ".git", "worktrees")
+	if found, err := hasWorktreeEntries(worktreesDir); err != nil {
+		return false, err
+	} else if found {
+		return true, nil
+	}
+	// Check ghq worktree layout .bare/worktrees/
+	worktreesDir = filepath.Join(dir, ".bare", "worktrees")
+	return hasWorktreeEntries(worktreesDir)
+}
+
+func hasWorktreeEntries(worktreesDir string) (bool, error) {
 	entries, err := os.ReadDir(worktreesDir)
 	if err != nil {
 		if os.IsNotExist(err) || isNotADirectory(err) {
@@ -85,10 +95,23 @@ func hasLinkedWorktrees(dir string) (bool, error) {
 	return false, nil
 }
 
-// listLinkedWorktreePaths reads .git/worktrees/*/gitdir in dir and returns
-// the worktree working-directory paths.
+// listLinkedWorktreePaths reads worktree entries in dir and returns
+// the worktree working-directory paths. Checks both .git/worktrees/ and .bare/worktrees/.
 func listLinkedWorktreePaths(dir string) ([]string, error) {
-	worktreesDir := filepath.Join(dir, ".git", "worktrees")
+	// Try .git/worktrees/ first
+	paths, err := listWorktreePathsFrom(filepath.Join(dir, ".git", "worktrees"))
+	if err != nil {
+		return nil, err
+	}
+	// Also try .bare/worktrees/ (ghq worktree layout)
+	barePaths, err := listWorktreePathsFrom(filepath.Join(dir, ".bare", "worktrees"))
+	if err != nil {
+		return nil, err
+	}
+	return append(paths, barePaths...), nil
+}
+
+func listWorktreePathsFrom(worktreesDir string) ([]string, error) {
 	entries, err := os.ReadDir(worktreesDir)
 	if err != nil {
 		if os.IsNotExist(err) || isNotADirectory(err) {

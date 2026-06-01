@@ -48,16 +48,18 @@ func TestVCSBackend(t *testing.T) {
 		expect []string
 		dir    string
 	}{{
-		name: "[git] clone",
+		name: "[git] clone (worktree layout)",
 		f: func() error {
 			return GitBackend.Clone(&vcsGetOption{
 				url: remoteDummyURL,
 				dir: localDir,
 			})
 		},
-		expect: []string{"git", "clone", remoteDummyURL.String(), localDir},
+		// Last command is worktree add (bare clone happens first)
+		expect: []string{"git", "worktree", "add", filepath.Join(localDir, "main"), "main"},
+		dir:    filepath.Join(localDir, ".bare"),
 	}, {
-		name: "[git] shallow clone",
+		name: "[git] shallow clone (worktree layout)",
 		f: func() error {
 			return GitBackend.Clone(&vcsGetOption{
 				url:     remoteDummyURL,
@@ -66,9 +68,10 @@ func TestVCSBackend(t *testing.T) {
 				silent:  true,
 			})
 		},
-		expect: []string{"git", "clone", "--depth", "1", remoteDummyURL.String(), localDir},
+		expect: []string{"git", "worktree", "add", filepath.Join(localDir, "main"), "main"},
+		dir:    filepath.Join(localDir, ".bare"),
 	}, {
-		name: "[git] clone specific branch",
+		name: "[git] clone specific branch (worktree layout)",
 		f: func() error {
 			return GitBackend.Clone(&vcsGetOption{
 				url:    remoteDummyURL,
@@ -76,7 +79,8 @@ func TestVCSBackend(t *testing.T) {
 				branch: "hello",
 			})
 		},
-		expect: []string{"git", "clone", "--branch", "hello", "--single-branch", remoteDummyURL.String(), localDir},
+		expect: []string{"git", "worktree", "add", filepath.Join(localDir, "hello"), "hello"},
+		dir:    filepath.Join(localDir, ".bare"),
 	}, {
 		name: "[git] update",
 		f: func() error {
@@ -106,7 +110,7 @@ func TestVCSBackend(t *testing.T) {
 		expect: []string{"git", "fetch"},
 		dir:    localDir,
 	}, {
-		name: "[git] recursive",
+		name: "[git] recursive (worktree layout)",
 		f: func() error {
 			return GitBackend.Clone(&vcsGetOption{
 				url:       remoteDummyURL,
@@ -114,7 +118,9 @@ func TestVCSBackend(t *testing.T) {
 				recursive: true,
 			})
 		},
-		expect: []string{"git", "clone", "--recursive", remoteDummyURL.String(), localDir},
+		// Last command is submodule update in the worktree dir
+		expect: []string{"git", "submodule", "update", "--init", "--recursive"},
+		dir:    filepath.Join(localDir, "main"),
 	}, {
 		name: "[git] update recursive",
 		f: func() error {
@@ -126,7 +132,7 @@ func TestVCSBackend(t *testing.T) {
 		expect: []string{"git", "submodule", "update", "--init", "--recursive"},
 		dir:    localDir,
 	}, {
-		name: "[git] bare clone",
+		name: "[git] bare clone (explicit --bare, no worktree layout)",
 		f: func() error {
 			return GitBackend.Clone(&vcsGetOption{
 				url:    remoteDummyURL,
@@ -137,7 +143,7 @@ func TestVCSBackend(t *testing.T) {
 		},
 		expect: []string{"git", "clone", "--bare", remoteDummyURL.String(), localDir},
 	}, {
-		name: "[git] (partial) blobless clone",
+		name: "[git] (partial) blobless clone (worktree layout)",
 		f: func() error {
 			return GitBackend.Clone(&vcsGetOption{
 				url:     remoteDummyURL,
@@ -145,9 +151,10 @@ func TestVCSBackend(t *testing.T) {
 				partial: "blobless",
 			})
 		},
-		expect: []string{"git", "clone", "--filter=blob:none", remoteDummyURL.String(), localDir},
+		expect: []string{"git", "worktree", "add", filepath.Join(localDir, "main"), "main"},
+		dir:    filepath.Join(localDir, ".bare"),
 	}, {
-		name: "[git] (partial) treeless clone",
+		name: "[git] (partial) treeless clone (worktree layout)",
 		f: func() error {
 			return GitBackend.Clone(&vcsGetOption{
 				url:     remoteDummyURL,
@@ -155,7 +162,8 @@ func TestVCSBackend(t *testing.T) {
 				partial: "treeless",
 			})
 		},
-		expect: []string{"git", "clone", "--filter=tree:0", remoteDummyURL.String(), localDir},
+		expect: []string{"git", "worktree", "add", filepath.Join(localDir, "main"), "main"},
+		dir:    filepath.Join(localDir, ".bare"),
 	}, {
 		name: "[git] switch git-svn on update",
 		f: func() error {

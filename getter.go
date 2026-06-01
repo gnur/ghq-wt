@@ -64,6 +64,50 @@ func (g *getter) getRemoteRepository(ctx context.Context, remote RemoteRepositor
 		newPath = false
 	)
 
+	// Determine if this will be a git worktree layout
+	vcs, ok := vcsRegistry[g.vcs]
+	if !ok {
+		vcs, _, err = remote.VCS()
+		if err != nil {
+			return getInfo{}, err
+		}
+	}
+	isGitWorktreeLayout := (vcs == GitBackend) && !g.bare
+
+	// For git worktree layout, check if the base dir (with .bare) exists
+	if isGitWorktreeLayout {
+		bareDir := filepath.Join(fpath, ".bare")
+		if _, err := os.Stat(bareDir); err == nil {
+			// Already cloned in worktree layout
+			// Determine the worktree path to report
+			branchName := branch
+			if branchName == "" {
+				branchName = detectDefaultBranch(bareDir, "")
+			}
+			worktreePath := filepath.Join(fpath, branchName)
+			local.FullPath = worktreePath
+
+			if g.update {
+				logger.Log("update", fpath)
+				if getRepoLock(bareDir) {
+					repoURL := remoteURL
+					if remoteURL.Scheme == "codecommit" {
+						repoURL, _ = url.Parse(remoteURL.Opaque)
+					}
+					return info, vcs.Update(&vcsGetOption{
+						url:       repoURL,
+						dir:       fpath,
+						silent:    g.silent,
+						recursive: g.recursive,
+					})
+				}
+				return info, nil
+			}
+			logger.Log("exists", worktreePath)
+			return info, nil
+		}
+	}
+
 	_, err = os.Stat(fpath)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -105,17 +149,28 @@ func (g *getter) getRemoteRepository(ctx context.Context, remote RemoteRepositor
 			repoURL, _ = url.Parse(remoteURL.Opaque)
 		}
 		if getRepoLock(localRepoRoot) {
-			return info,
-				vcs.Clone(&vcsGetOption{
-					url:       repoURL,
-					dir:       localRepoRoot,
-					shallow:   g.shallow,
-					silent:    g.silent,
-					branch:    branch,
-					recursive: g.recursive,
-					bare:      g.bare,
-					partial:   g.partial,
-				})
+			err := vcs.Clone(&vcsGetOption{
+				url:       repoURL,
+				dir:       localRepoRoot,
+				shallow:   g.shallow,
+				silent:    g.silent,
+				branch:    branch,
+				recursive: g.recursive,
+				bare:      g.bare,
+				partial:   g.partial,
+			})
+			if err != nil {
+				return info, err
+			}
+			// For git worktree layout, update FullPath to point to the worktree
+			if isGitWorktreeLayout {
+				bareDir := filepath.Join(localRepoRoot, ".bare")
+				branchName := branch
+				if branchName == "" {
+					branchName = detectDefaultBranch(bareDir, "")
+				}
+				local.FullPath = filepath.Join(localRepoRoot, branchName)
+			}
 		}
 		return info, nil
 	case g.update:
