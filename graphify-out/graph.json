@@ -5,37 +5,6 @@
     "hyperedges": [
       {
         "nodes": [
-          "remote_repository_GitHubRepository",
-          "remote_repository_GitHubGistRepository",
-          "remote_repository_DarksHubRepository",
-          "remote_repository_NestPijulRepository",
-          "remote_repository_CodeCommitRepository",
-          "remote_repository_ChiselRepository",
-          "remote_repository_OtherRepository"
-        ],
-        "relation": "RemoteRepository implementations dispatched by NewRemoteRepository",
-        "confidence": "EXTRACTED",
-        "confidence_score": 1.0,
-        "source_file": "remote_repository.go"
-      },
-      {
-        "nodes": [
-          "vcs_GitBackend",
-          "vcs_SubversionBackend",
-          "vcs_GitsvnBackend",
-          "vcs_MercurialBackend",
-          "vcs_DarcsBackend",
-          "vcs_PijulBackend",
-          "vcs_FossilBackend",
-          "vcs_BazaarBackend"
-        ],
-        "relation": "VCS backend registry entries",
-        "confidence": "EXTRACTED",
-        "confidence_score": 1.0,
-        "source_file": "vcs.go"
-      },
-      {
-        "nodes": [
           "cmd_get_doGet",
           "cmd_list_doList",
           "cmd_root_doRoot",
@@ -47,26 +16,92 @@
         "source_file": "cmd_root.go"
       },
       {
+        "id": "worktree_management_flow",
+        "label": "Worktree Management Flow",
         "nodes": [
-          "url_newURL",
-          "local_repository_LocalRepositoryFromURL",
-          "local_repository_localRepositoryRoots"
+          "worktree_isLinkedGitDir",
+          "worktree_isWorktreeGitDir",
+          "worktree_hasLinkedWorktrees",
+          "worktree_listLinkedWorktreePaths",
+          "worktree_resolveMainRepoDir",
+          "worktree_repairWorktreeBackPointers"
         ],
-        "relation": "url_to_local_path_resolution",
-        "confidence": "INFERRED",
-        "confidence_score": 0.85,
-        "description": "URL parsing and local repository path resolution pipeline"
+        "relation": "implement",
+        "confidence": "EXTRACTED",
+        "confidence_score": 0.9,
+        "source_file": "worktree.go"
       },
       {
+        "id": "remote_repository_dispatch",
+        "label": "Remote Repository Type Dispatch",
         "nodes": [
-          "cmd_rm_doRm",
-          "cmd_migrate_doMigrate",
-          "cmd_rm_confirm"
+          "remote_repository_NewRemoteRepository",
+          "remote_repository_GitHubRepository",
+          "remote_repository_OtherRepository",
+          "remote_repository_CodeCommitRepository",
+          "remote_repository_ChiselRepository"
         ],
-        "relation": "destructive_command_pattern",
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "remote_repository.go"
+      },
+      {
+        "id": "vcs_clone_worktree_layout",
+        "label": "VCS Clone Worktree Layout",
+        "nodes": [
+          "vcs_GitBackend",
+          "branch_detectDefaultBranch",
+          "cmd_migrate_worktree_doMigrateWorktree"
+        ],
+        "relation": "form",
         "confidence": "INFERRED",
         "confidence_score": 0.8,
-        "description": "Commands that modify filesystem with confirmation prompt pattern"
+        "source_file": "vcs.go"
+      },
+      {
+        "id": "cli_command_dispatch",
+        "label": "CLI Command Registration and Dispatch",
+        "nodes": [
+          "main_newApp",
+          "commands_commands",
+          "commands_commandGet",
+          "commands_commandList",
+          "commands_commandMigrate",
+          "commands_commandMigrateWorktree"
+        ],
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "commands.go"
+      },
+      {
+        "id": "repository_resolution_flow",
+        "label": "Repository Resolution Flow",
+        "nodes": [
+          "getter_getRemoteRepository",
+          "local_repository_LocalRepositoryFromURL",
+          "local_repository_getRoot",
+          "local_repository_walkLocalRepositories"
+        ],
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 0.9,
+        "source_file": "getter.go"
+      },
+      {
+        "id": "subprocess_execution_layer",
+        "label": "Subprocess Execution Layer",
+        "nodes": [
+          "cmdutil_Run",
+          "cmdutil_RunInDir",
+          "cmdutil_RunCommand",
+          "cmdutil_CommandRunner"
+        ],
+        "relation": "implement",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "cmdutil/run.go"
       }
     ]
   },
@@ -76,7 +111,7 @@
       "file_type": "code",
       "source_file": "remote_repository_test.go",
       "source_location": "L1",
-      "community": 9,
+      "community": 1,
       "norm_label": "remote_repository_test.go",
       "id": "remote_repository_test_go"
     },
@@ -85,7 +120,7 @@
       "file_type": "code",
       "source_file": "remote_repository_test.go",
       "source_location": "L7",
-      "community": 9,
+      "community": 1,
       "norm_label": "testnewremoterepository()",
       "id": "ghq_remote_repository_test_testnewremoterepository"
     },
@@ -94,7 +129,7 @@
       "file_type": "code",
       "source_file": "remote_repository_test.go",
       "source_location": "L70",
-      "community": 9,
+      "community": 1,
       "norm_label": "testnewremoterepository_vcs_error()",
       "id": "ghq_remote_repository_test_testnewremoterepository_vcs_error"
     },
@@ -103,7 +138,7 @@
       "file_type": "code",
       "source_file": "remote_repository_test.go",
       "source_location": "L105",
-      "community": 9,
+      "community": 1,
       "norm_label": "testnewremoterepository_error()",
       "id": "ghq_remote_repository_test_testnewremoterepository_error"
     },
@@ -112,7 +147,7 @@
       "file_type": "code",
       "source_file": "cmd_get.go",
       "source_location": "L1",
-      "community": 10,
+      "community": 5,
       "norm_label": "cmd_get.go",
       "id": "cmd_get_go"
     },
@@ -121,7 +156,7 @@
       "file_type": "code",
       "source_file": "cmd_get.go",
       "source_location": "L23",
-      "community": 10,
+      "community": 5,
       "norm_label": "doget()",
       "id": "ghq_cmd_get_doget"
     },
@@ -130,7 +165,7 @@
       "file_type": "code",
       "source_file": "cmd_get.go",
       "source_location": "L116",
-      "community": 10,
+      "community": 5,
       "norm_label": "slicescanner",
       "id": "ghq_slicescanner"
     },
@@ -139,7 +174,7 @@
       "file_type": "code",
       "source_file": "cmd_get.go",
       "source_location": "L121",
-      "community": 10,
+      "community": 5,
       "norm_label": ".scan()",
       "id": "ghq_slicescanner_scan"
     },
@@ -148,7 +183,7 @@
       "file_type": "code",
       "source_file": "cmd_get.go",
       "source_location": "L126",
-      "community": 10,
+      "community": 5,
       "norm_label": ".text()",
       "id": "ghq_slicescanner_text"
     },
@@ -157,7 +192,7 @@
       "file_type": "code",
       "source_file": "cmd_get.go",
       "source_location": "L130",
-      "community": 10,
+      "community": 5,
       "norm_label": ".err()",
       "id": "ghq_slicescanner_err"
     },
@@ -166,7 +201,7 @@
       "file_type": "code",
       "source_file": "cmd_get.go",
       "source_location": "L134",
-      "community": 10,
+      "community": 5,
       "norm_label": "scanner",
       "id": "ghq_scanner"
     },
@@ -175,7 +210,7 @@
       "file_type": "code",
       "source_file": "cmd_get.go",
       "source_location": "L140",
-      "community": 10,
+      "community": 5,
       "norm_label": "detectshell()",
       "id": "ghq_cmd_get_detectshell"
     },
@@ -184,7 +219,7 @@
       "file_type": "code",
       "source_file": "cmd_get.go",
       "source_location": "L151",
-      "community": 10,
+      "community": 5,
       "norm_label": "look()",
       "id": "ghq_cmd_get_look"
     },
@@ -193,7 +228,7 @@
       "file_type": "code",
       "source_file": "cmd_get.go",
       "source_location": "L196",
-      "community": 10,
+      "community": 5,
       "norm_label": "lookbylocalrepository()",
       "id": "ghq_cmd_get_lookbylocalrepository"
     },
@@ -202,7 +237,7 @@
       "file_type": "code",
       "source_file": "helpers_windows_test.go",
       "source_location": "L1",
-      "community": 12,
+      "community": 1,
       "norm_label": "helpers_windows_test.go",
       "id": "helpers_windows_test_go"
     },
@@ -211,7 +246,7 @@
       "file_type": "code",
       "source_file": "helpers_windows_test.go",
       "source_location": "L18",
-      "community": 12,
+      "community": 1,
       "norm_label": "testevalsymlinksmode",
       "id": "ghq_testevalsymlinksmode"
     },
@@ -220,7 +255,7 @@
       "file_type": "code",
       "source_file": "helpers_windows_test.go",
       "source_location": "L26",
-      "community": 12,
+      "community": 1,
       "norm_label": "test_evalsymlinks()",
       "id": "ghq_helpers_windows_test_test_evalsymlinks"
     },
@@ -229,7 +264,7 @@
       "file_type": "code",
       "source_file": "helpers_windows_test.go",
       "source_location": "L87",
-      "community": 12,
+      "community": 1,
       "norm_label": "createlink()",
       "id": "ghq_helpers_windows_test_createlink"
     },
@@ -238,7 +273,7 @@
       "file_type": "code",
       "source_file": "commands_test.go",
       "source_location": "L1",
-      "community": 15,
+      "community": 13,
       "norm_label": "commands_test.go",
       "id": "commands_test_go"
     },
@@ -247,7 +282,7 @@
       "file_type": "code",
       "source_file": "commands_test.go",
       "source_location": "L10",
-      "community": 15,
+      "community": 13,
       "norm_label": "_cloneargs",
       "id": "ghq_cloneargs"
     },
@@ -256,7 +291,7 @@
       "file_type": "code",
       "source_file": "commands_test.go",
       "source_location": "L21",
-      "community": 15,
+      "community": 13,
       "norm_label": "_updateargs",
       "id": "ghq_updateargs"
     },
@@ -481,7 +516,7 @@
       "file_type": "code",
       "source_file": "remote_repository.go",
       "source_location": "L25",
-      "community": 7,
+      "community": 5,
       "norm_label": "githubrepository",
       "id": "ghq_githubrepository"
     },
@@ -490,7 +525,7 @@
       "file_type": "code",
       "source_file": "remote_repository.go",
       "source_location": "L30",
-      "community": 7,
+      "community": 5,
       "norm_label": ".url()",
       "id": "ghq_githubrepository_url"
     },
@@ -499,7 +534,7 @@
       "file_type": "code",
       "source_file": "remote_repository.go",
       "source_location": "L35",
-      "community": 7,
+      "community": 5,
       "norm_label": ".isvalid()",
       "id": "ghq_githubrepository_isvalid"
     },
@@ -508,7 +543,7 @@
       "file_type": "code",
       "source_file": "remote_repository.go",
       "source_location": "L45",
-      "community": 7,
+      "community": 5,
       "norm_label": ".vcs()",
       "id": "ghq_githubrepository_vcs"
     },
@@ -715,7 +750,7 @@
       "file_type": "code",
       "source_file": "remote_repository.go",
       "source_location": "L167",
-      "community": 9,
+      "community": 1,
       "norm_label": ".isvalid()",
       "id": "ghq_otherrepository_isvalid"
     },
@@ -733,7 +768,7 @@
       "file_type": "code",
       "source_file": "remote_repository.go",
       "source_location": "L236",
-      "community": 9,
+      "community": 1,
       "norm_label": "newremoterepository()",
       "id": "ghq_remote_repository_newremoterepository"
     },
@@ -760,7 +795,7 @@
       "file_type": "code",
       "source_file": "worktree.go",
       "source_location": "L1",
-      "community": 6,
+      "community": 7,
       "norm_label": "worktree.go",
       "id": "worktree_go"
     },
@@ -769,7 +804,7 @@
       "file_type": "code",
       "source_file": "worktree.go",
       "source_location": "L14",
-      "community": 6,
+      "community": 7,
       "norm_label": "isnotadirectory()",
       "id": "ghq_worktree_isnotadirectory"
     },
@@ -778,7 +813,7 @@
       "file_type": "code",
       "source_file": "worktree.go",
       "source_location": "L22",
-      "community": 6,
+      "community": 7,
       "norm_label": "islinkedgitdir()",
       "id": "ghq_worktree_islinkedgitdir"
     },
@@ -787,7 +822,7 @@
       "file_type": "code",
       "source_file": "worktree.go",
       "source_location": "L61",
-      "community": 6,
+      "community": 7,
       "norm_label": "isworktreegitdir()",
       "id": "ghq_worktree_isworktreegitdir"
     },
@@ -795,8 +830,8 @@
       "label": "hasLinkedWorktrees()",
       "file_type": "code",
       "source_file": "worktree.go",
-      "source_location": "L71",
-      "community": 6,
+      "source_location": "L69",
+      "community": 7,
       "norm_label": "haslinkedworktrees()",
       "id": "ghq_worktree_haslinkedworktrees"
     },
@@ -804,8 +839,8 @@
       "label": "listLinkedWorktreePaths()",
       "file_type": "code",
       "source_file": "worktree.go",
-      "source_location": "L90",
-      "community": 6,
+      "source_location": "L100",
+      "community": 7,
       "norm_label": "listlinkedworktreepaths()",
       "id": "ghq_worktree_listlinkedworktreepaths"
     },
@@ -813,8 +848,8 @@
       "label": "resolveMainRepoDir()",
       "file_type": "code",
       "source_file": "worktree.go",
-      "source_location": "L133",
-      "community": 6,
+      "source_location": "L156",
+      "community": 7,
       "norm_label": "resolvemainrepodir()",
       "id": "ghq_worktree_resolvemainrepodir"
     },
@@ -822,8 +857,8 @@
       "label": "repairWorktreeBackPointers()",
       "file_type": "code",
       "source_file": "worktree.go",
-      "source_location": "L153",
-      "community": 6,
+      "source_location": "L176",
+      "community": 7,
       "norm_label": "repairworktreebackpointers()",
       "id": "ghq_worktree_repairworktreebackpointers"
     },
@@ -832,7 +867,7 @@
       "file_type": "code",
       "source_file": "vcs.go",
       "source_location": "L1",
-      "community": 11,
+      "community": 9,
       "norm_label": "vcs.go",
       "id": "vcs_go"
     },
@@ -841,7 +876,7 @@
       "file_type": "code",
       "source_file": "vcs.go",
       "source_location": "L18",
-      "community": 11,
+      "community": 9,
       "norm_label": "run()",
       "id": "ghq_vcs_run"
     },
@@ -850,7 +885,7 @@
       "file_type": "code",
       "source_file": "vcs.go",
       "source_location": "L25",
-      "community": 11,
+      "community": 9,
       "norm_label": "runindir()",
       "id": "ghq_vcs_runindir"
     },
@@ -859,7 +894,7 @@
       "file_type": "code",
       "source_file": "vcs.go",
       "source_location": "L33",
-      "community": 11,
+      "community": 9,
       "norm_label": "vcsbackend",
       "id": "ghq_vcsbackend"
     },
@@ -868,7 +903,7 @@
       "file_type": "code",
       "source_file": "vcs.go",
       "source_location": "L46",
-      "community": 11,
+      "community": 9,
       "norm_label": "vcsgetoption",
       "id": "ghq_vcsgetoption"
     },
@@ -877,7 +912,7 @@
       "file_type": "code",
       "source_file": "vcs.go",
       "source_location": "L55",
-      "community": 11,
+      "community": 9,
       "norm_label": "getgitremoteurl()",
       "id": "ghq_vcs_getgitremoteurl"
     },
@@ -885,8 +920,8 @@
       "label": "replaceOnce()",
       "file_type": "code",
       "source_file": "vcs.go",
-      "source_location": "L184",
-      "community": 11,
+      "source_location": "L233",
+      "community": 9,
       "norm_label": "replaceonce()",
       "id": "ghq_vcs_replaceonce"
     },
@@ -894,8 +929,8 @@
       "label": "svnBase()",
       "file_type": "code",
       "source_file": "vcs.go",
-      "source_location": "L195",
-      "community": 11,
+      "source_location": "L244",
+      "community": 9,
       "norm_label": "svnbase()",
       "id": "ghq_vcs_svnbase"
     },
@@ -921,7 +956,7 @@
       "label": "TestCvsDummyBackend()",
       "file_type": "code",
       "source_file": "vcs_test.go",
-      "source_location": "L454",
+      "source_location": "L462",
       "community": 0,
       "norm_label": "testcvsdummybackend()",
       "id": "ghq_vcs_test_testcvsdummybackend"
@@ -930,7 +965,7 @@
       "label": "TestBranchOptionIgnoredErrors()",
       "file_type": "code",
       "source_file": "vcs_test.go",
-      "source_location": "L480",
+      "source_location": "L488",
       "community": 0,
       "norm_label": "testbranchoptionignorederrors()",
       "id": "ghq_vcs_test_testbranchoptionignorederrors"
@@ -994,7 +1029,7 @@
       "file_type": "code",
       "source_file": "cmd_get_test.go",
       "source_location": "L407",
-      "community": 10,
+      "community": 0,
       "norm_label": "testlook()",
       "id": "ghq_cmd_get_test_testlook"
     },
@@ -1021,7 +1056,7 @@
       "file_type": "code",
       "source_file": "helpers_windows.go",
       "source_location": "L1",
-      "community": 13,
+      "community": 11,
       "norm_label": "helpers_windows.go",
       "id": "helpers_windows_go"
     },
@@ -1030,7 +1065,7 @@
       "file_type": "code",
       "source_file": "helpers_windows.go",
       "source_location": "L12",
-      "community": 13,
+      "community": 11,
       "norm_label": "tofullpath()",
       "id": "ghq_helpers_windows_tofullpath"
     },
@@ -1039,7 +1074,7 @@
       "file_type": "code",
       "source_file": "helpers_windows.go",
       "source_location": "L30",
-      "community": 13,
+      "community": 11,
       "norm_label": "evalsymlinks()",
       "id": "ghq_helpers_windows_evalsymlinks"
     },
@@ -1048,7 +1083,7 @@
       "file_type": "code",
       "source_file": "helpers_windows.go",
       "source_location": "L57",
-      "community": 13,
+      "community": 11,
       "norm_label": "filepathsplitall()",
       "id": "ghq_helpers_windows_filepathsplitall"
     },
@@ -1066,7 +1101,7 @@
       "file_type": "code",
       "source_file": "helpers_test.go",
       "source_location": "L11",
-      "community": 9,
+      "community": 0,
       "norm_label": "mustparseurl()",
       "id": "ghq_helpers_test_mustparseurl"
     },
@@ -1120,7 +1155,7 @@
       "file_type": "code",
       "source_file": "cmd_create.go",
       "source_location": "L1",
-      "community": 9,
+      "community": 1,
       "norm_label": "cmd_create.go",
       "id": "cmd_create_go"
     },
@@ -1129,7 +1164,7 @@
       "file_type": "code",
       "source_file": "cmd_create.go",
       "source_location": "L12",
-      "community": 9,
+      "community": 1,
       "norm_label": "docreate()",
       "id": "ghq_cmd_create_docreate"
     },
@@ -1138,7 +1173,7 @@
       "file_type": "code",
       "source_file": "cmd_create.go",
       "source_location": "L75",
-      "community": 9,
+      "community": 1,
       "norm_label": "isnotexistorempty()",
       "id": "ghq_cmd_create_isnotexistorempty"
     },
@@ -1210,7 +1245,7 @@
       "file_type": "code",
       "source_file": "url.go",
       "source_location": "L1",
-      "community": 4,
+      "community": 6,
       "norm_label": "url.go",
       "id": "url_go"
     },
@@ -1219,7 +1254,7 @@
       "file_type": "code",
       "source_file": "url.go",
       "source_location": "L28",
-      "community": 4,
+      "community": 6,
       "norm_label": "newurl()",
       "id": "ghq_url_newurl"
     },
@@ -1228,7 +1263,7 @@
       "file_type": "code",
       "source_file": "url.go",
       "source_location": "L163",
-      "community": 4,
+      "community": 6,
       "norm_label": "convertgiturlhttptossh()",
       "id": "ghq_url_convertgiturlhttptossh"
     },
@@ -1237,7 +1272,7 @@
       "file_type": "code",
       "source_file": "url.go",
       "source_location": "L172",
-      "community": 4,
+      "community": 6,
       "norm_label": "detectusername()",
       "id": "ghq_url_detectusername"
     },
@@ -1246,7 +1281,7 @@
       "file_type": "code",
       "source_file": "url.go",
       "source_location": "L196",
-      "community": 4,
+      "community": 6,
       "norm_label": "fillusernametopath()",
       "id": "ghq_url_fillusernametopath"
     },
@@ -1255,7 +1290,7 @@
       "file_type": "code",
       "source_file": "cmd_rm.go",
       "source_location": "L1",
-      "community": 6,
+      "community": 7,
       "norm_label": "cmd_rm.go",
       "id": "cmd_rm_go"
     },
@@ -1264,7 +1299,7 @@
       "file_type": "code",
       "source_file": "cmd_rm.go",
       "source_location": "L14",
-      "community": 6,
+      "community": 7,
       "norm_label": "dorm()",
       "id": "ghq_cmd_rm_dorm"
     },
@@ -1273,7 +1308,7 @@
       "file_type": "code",
       "source_file": "cmd_rm.go",
       "source_location": "L150",
-      "community": 6,
+      "community": 7,
       "norm_label": "confirm()",
       "id": "ghq_cmd_rm_confirm"
     },
@@ -1282,7 +1317,7 @@
       "file_type": "code",
       "source_file": "cmd_root_test.go",
       "source_location": "L1",
-      "community": 0,
+      "community": 1,
       "norm_label": "cmd_root_test.go",
       "id": "cmd_root_test_go"
     },
@@ -1291,7 +1326,7 @@
       "file_type": "code",
       "source_file": "cmd_root_test.go",
       "source_location": "L15",
-      "community": 0,
+      "community": 1,
       "norm_label": "samepaths()",
       "id": "ghq_cmd_root_test_samepaths"
     },
@@ -1354,7 +1389,7 @@
       "file_type": "code",
       "source_file": "local_repository_test.go",
       "source_location": "L76",
-      "community": 9,
+      "community": 0,
       "norm_label": "testnewlocalrepository()",
       "id": "ghq_local_repository_test_testnewlocalrepository"
     },
@@ -1417,7 +1452,7 @@
       "file_type": "code",
       "source_file": "commands.go",
       "source_location": "L1",
-      "community": 14,
+      "community": 12,
       "norm_label": "commands.go",
       "id": "commands_go"
     },
@@ -1425,8 +1460,8 @@
       "label": "commandDoc",
       "file_type": "code",
       "source_file": "commands.go",
-      "source_location": "L105",
-      "community": 14,
+      "source_location": "L106",
+      "community": 12,
       "norm_label": "commanddoc",
       "id": "ghq_commanddoc"
     },
@@ -1434,8 +1469,8 @@
       "label": "mkCommandsTemplate()",
       "file_type": "code",
       "source_file": "commands.go",
-      "source_location": "L120",
-      "community": 14,
+      "source_location": "L122",
+      "community": 12,
       "norm_label": "mkcommandstemplate()",
       "id": "ghq_commands_mkcommandstemplate"
     },
@@ -1443,8 +1478,8 @@
       "label": "init()",
       "file_type": "code",
       "source_file": "commands.go",
-      "source_location": "L128",
-      "community": 14,
+      "source_location": "L130",
+      "community": 12,
       "norm_label": "init()",
       "id": "ghq_commands_init"
     },
@@ -1453,7 +1488,7 @@
       "file_type": "code",
       "source_file": "url_test.go",
       "source_location": "L1",
-      "community": 4,
+      "community": 6,
       "norm_label": "url_test.go",
       "id": "url_test_go"
     },
@@ -1471,7 +1506,7 @@
       "file_type": "code",
       "source_file": "url_test.go",
       "source_location": "L99",
-      "community": 4,
+      "community": 6,
       "norm_label": "testconvertgiturlhttptossh()",
       "id": "ghq_url_test_testconvertgiturlhttptossh"
     },
@@ -1480,7 +1515,7 @@
       "file_type": "code",
       "source_file": "url_test.go",
       "source_location": "L130",
-      "community": 4,
+      "community": 6,
       "norm_label": "testnewurl_err()",
       "id": "ghq_url_test_testnewurl_err"
     },
@@ -1489,7 +1524,7 @@
       "file_type": "code",
       "source_file": "url_test.go",
       "source_location": "L146",
-      "community": 4,
+      "community": 6,
       "norm_label": "testfillusernametopath_err()",
       "id": "ghq_url_test_testfillusernametopath_err"
     },
@@ -1542,7 +1577,7 @@
       "label": "getRoot()",
       "file_type": "code",
       "source_file": "local_repository.go",
-      "source_location": "L124",
+      "source_location": "L138",
       "community": 1,
       "norm_label": "getroot()",
       "id": "ghq_local_repository_getroot"
@@ -1551,7 +1586,7 @@
       "label": ".Subpaths()",
       "file_type": "code",
       "source_file": "local_repository.go",
-      "source_location": "L147",
+      "source_location": "L161",
       "community": 1,
       "norm_label": ".subpaths()",
       "id": "ghq_localrepository_subpaths"
@@ -1560,7 +1595,7 @@
       "label": ".NonHostPath()",
       "file_type": "code",
       "source_file": "local_repository.go",
-      "source_location": "L158",
+      "source_location": "L172",
       "community": 1,
       "norm_label": ".nonhostpath()",
       "id": "ghq_localrepository_nonhostpath"
@@ -1569,7 +1604,7 @@
       "label": ".repoRootCandidates()",
       "file_type": "code",
       "source_file": "local_repository.go",
-      "source_location": "L166",
+      "source_location": "L180",
       "community": 1,
       "norm_label": ".reporootcandidates()",
       "id": "ghq_localrepository_reporootcandidates"
@@ -1578,7 +1613,7 @@
       "label": ".IsUnderPrimaryRoot()",
       "file_type": "code",
       "source_file": "local_repository.go",
-      "source_location": "L178",
+      "source_location": "L192",
       "community": 1,
       "norm_label": ".isunderprimaryroot()",
       "id": "ghq_localrepository_isunderprimaryroot"
@@ -1587,7 +1622,7 @@
       "label": ".Matches()",
       "file_type": "code",
       "source_file": "local_repository.go",
-      "source_location": "L187",
+      "source_location": "L201",
       "community": 1,
       "norm_label": ".matches()",
       "id": "ghq_localrepository_matches"
@@ -1596,7 +1631,7 @@
       "label": ".VCS()",
       "file_type": "code",
       "source_file": "local_repository.go",
-      "source_location": "L192",
+      "source_location": "L206",
       "community": 1,
       "norm_label": ".vcs()",
       "id": "ghq_localrepository_vcs"
@@ -1605,7 +1640,7 @@
       "label": "findVCSBackend()",
       "file_type": "code",
       "source_file": "local_repository.go",
-      "source_location": "L230",
+      "source_location": "L258",
       "community": 1,
       "norm_label": "findvcsbackend()",
       "id": "ghq_local_repository_findvcsbackend"
@@ -1614,7 +1649,7 @@
       "label": "walkAllLocalRepositories()",
       "file_type": "code",
       "source_file": "local_repository.go",
-      "source_location": "L258",
+      "source_location": "L300",
       "community": 1,
       "norm_label": "walkalllocalrepositories()",
       "id": "ghq_local_repository_walkalllocalrepositories"
@@ -1623,7 +1658,7 @@
       "label": "walkLocalRepositories()",
       "file_type": "code",
       "source_file": "local_repository.go",
-      "source_location": "L262",
+      "source_location": "L304",
       "community": 1,
       "norm_label": "walklocalrepositories()",
       "id": "ghq_local_repository_walklocalrepositories"
@@ -1632,7 +1667,7 @@
       "label": "getHome()",
       "file_type": "code",
       "source_file": "local_repository.go",
-      "source_location": "L333",
+      "source_location": "L379",
       "community": 1,
       "norm_label": "gethome()",
       "id": "ghq_local_repository_gethome"
@@ -1641,7 +1676,7 @@
       "label": "localRepositoryRoots()",
       "file_type": "code",
       "source_file": "local_repository.go",
-      "source_location": "L354",
+      "source_location": "L400",
       "community": 1,
       "norm_label": "localrepositoryroots()",
       "id": "ghq_local_repository_localrepositoryroots"
@@ -1650,7 +1685,7 @@
       "label": "urlMatchLocalRepositoryRoots()",
       "file_type": "code",
       "source_file": "local_repository.go",
-      "source_location": "L419",
+      "source_location": "L465",
       "community": 1,
       "norm_label": "urlmatchlocalrepositoryroots()",
       "id": "ghq_local_repository_urlmatchlocalrepositoryroots"
@@ -1659,7 +1694,7 @@
       "label": "primaryLocalRepositoryRoot()",
       "file_type": "code",
       "source_file": "local_repository.go",
-      "source_location": "L436",
+      "source_location": "L482",
       "community": 1,
       "norm_label": "primarylocalrepositoryroot()",
       "id": "ghq_local_repository_primarylocalrepositoryroot"
@@ -1723,7 +1758,7 @@
       "file_type": "code",
       "source_file": "cmd_migrate.go",
       "source_location": "L1",
-      "community": 6,
+      "community": 7,
       "norm_label": "cmd_migrate.go",
       "id": "cmd_migrate_go"
     },
@@ -1732,7 +1767,7 @@
       "file_type": "code",
       "source_file": "cmd_migrate.go",
       "source_location": "L17",
-      "community": 6,
+      "community": 7,
       "norm_label": "domigrate()",
       "id": "ghq_cmd_migrate_domigrate"
     },
@@ -1741,7 +1776,7 @@
       "file_type": "code",
       "source_file": "cmd_migrate.go",
       "source_location": "L163",
-      "community": 6,
+      "community": 7,
       "norm_label": "movedir()",
       "id": "ghq_cmd_migrate_movedir"
     },
@@ -1750,7 +1785,7 @@
       "file_type": "code",
       "source_file": "getter.go",
       "source_location": "L1",
-      "community": 4,
+      "community": 6,
       "norm_label": "getter.go",
       "id": "getter_go"
     },
@@ -1759,7 +1794,7 @@
       "file_type": "code",
       "source_file": "getter.go",
       "source_location": "L18",
-      "community": 4,
+      "community": 6,
       "norm_label": "getrepolock()",
       "id": "ghq_getter_getrepolock"
     },
@@ -1768,7 +1803,7 @@
       "file_type": "code",
       "source_file": "getter.go",
       "source_location": "L23",
-      "community": 4,
+      "community": 6,
       "norm_label": "getinfo",
       "id": "ghq_getinfo"
     },
@@ -1777,7 +1812,7 @@
       "file_type": "code",
       "source_file": "getter.go",
       "source_location": "L27",
-      "community": 4,
+      "community": 6,
       "norm_label": "getter",
       "id": "ghq_getter"
     },
@@ -1786,7 +1821,7 @@
       "file_type": "code",
       "source_file": "getter.go",
       "source_location": "L32",
-      "community": 4,
+      "community": 6,
       "norm_label": ".get()",
       "id": "ghq_getter_get"
     },
@@ -1795,7 +1830,7 @@
       "file_type": "code",
       "source_file": "getter.go",
       "source_location": "L52",
-      "community": 4,
+      "community": 6,
       "norm_label": ".getremoterepository()",
       "id": "ghq_getter_getremoterepository"
     },
@@ -1803,8 +1838,8 @@
       "label": "detectLocalRepoRoot()",
       "file_type": "code",
       "source_file": "getter.go",
-      "source_location": "L146",
-      "community": 4,
+      "source_location": "L201",
+      "community": 6,
       "norm_label": "detectlocalreporoot()",
       "id": "ghq_getter_detectlocalreporoot"
     },
@@ -1813,7 +1848,7 @@
       "file_type": "code",
       "source_file": "getter_test.go",
       "source_location": "L1",
-      "community": 4,
+      "community": 6,
       "norm_label": "getter_test.go",
       "id": "getter_test_go"
     },
@@ -1822,7 +1857,7 @@
       "file_type": "code",
       "source_file": "getter_test.go",
       "source_location": "L5",
-      "community": 4,
+      "community": 6,
       "norm_label": "testdetectlocalreporoot()",
       "id": "ghq_getter_test_testdetectlocalreporoot"
     },
@@ -1831,7 +1866,7 @@
       "file_type": "code",
       "source_file": "main_test.go",
       "source_location": "L1",
-      "community": 0,
+      "community": 14,
       "norm_label": "main_test.go",
       "id": "main_test_go"
     },
@@ -1840,7 +1875,7 @@
       "file_type": "code",
       "source_file": "main_test.go",
       "source_location": "L10",
-      "community": 0,
+      "community": 14,
       "norm_label": "testmain()",
       "id": "ghq_main_test_testmain"
     },
@@ -1849,7 +1884,7 @@
       "file_type": "code",
       "source_file": "logger/log.go",
       "source_location": "L1",
-      "community": 7,
+      "community": 5,
       "norm_label": "log.go",
       "id": "logger_log_go"
     },
@@ -1858,7 +1893,7 @@
       "file_type": "code",
       "source_file": "logger/log.go",
       "source_location": "L52",
-      "community": 7,
+      "community": 5,
       "norm_label": "init()",
       "id": "logger_log_init"
     },
@@ -1867,7 +1902,7 @@
       "file_type": "code",
       "source_file": "logger/log.go",
       "source_location": "L56",
-      "community": 7,
+      "community": 5,
       "norm_label": "selectlogger()",
       "id": "logger_log_selectlogger"
     },
@@ -1876,7 +1911,7 @@
       "file_type": "code",
       "source_file": "logger/log.go",
       "source_location": "L64",
-      "community": 7,
+      "community": 5,
       "norm_label": "setoutput()",
       "id": "logger_log_setoutput"
     },
@@ -1885,7 +1920,7 @@
       "file_type": "code",
       "source_file": "logger/log.go",
       "source_location": "L69",
-      "community": 7,
+      "community": 5,
       "norm_label": "log()",
       "id": "logger_log_log"
     },
@@ -1894,7 +1929,7 @@
       "file_type": "code",
       "source_file": "logger/log.go",
       "source_location": "L74",
-      "community": 7,
+      "community": 5,
       "norm_label": "logf()",
       "id": "logger_log_logf"
     },
@@ -1903,7 +1938,7 @@
       "file_type": "code",
       "source_file": "logger/log_test.go",
       "source_location": "L1",
-      "community": 7,
+      "community": 5,
       "norm_label": "log_test.go",
       "id": "logger_log_test_go"
     },
@@ -1912,7 +1947,7 @@
       "file_type": "code",
       "source_file": "logger/log_test.go",
       "source_location": "L8",
-      "community": 7,
+      "community": 5,
       "norm_label": "testlog()",
       "id": "logger_log_test_testlog"
     },
@@ -2043,7 +2078,7 @@
       "id": "cmdutil_run_test_testrunsilently"
     },
     {
-      "label": "doGet command handler",
+      "label": "doGet Command",
       "file_type": "code",
       "source_file": "cmd_get.go",
       "source_location": "line 23",
@@ -2051,9 +2086,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "cmd_get_doGet",
-      "community": 3,
-      "norm_label": "doget command handler"
+      "community": 4,
+      "norm_label": "doget command",
+      "id": "cmd_get_doGet"
     },
     {
       "label": "getter struct",
@@ -2064,9 +2099,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "cmd_get_getter",
-      "community": 3,
-      "norm_label": "getter struct"
+      "community": 4,
+      "norm_label": "getter struct",
+      "id": "cmd_get_getter"
     },
     {
       "label": "look function",
@@ -2077,9 +2112,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "cmd_get_look",
-      "community": 3,
-      "norm_label": "look function"
+      "community": 4,
+      "norm_label": "look function",
+      "id": "cmd_get_look"
     },
     {
       "label": "lookByLocalRepository function",
@@ -2090,9 +2125,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "cmd_get_lookByLocalRepository",
-      "community": 3,
-      "norm_label": "lookbylocalrepository function"
+      "community": 4,
+      "norm_label": "lookbylocalrepository function",
+      "id": "cmd_get_lookByLocalRepository"
     },
     {
       "label": "scanner interface",
@@ -2103,9 +2138,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "cmd_get_scanner",
-      "community": 19,
-      "norm_label": "scanner interface"
+      "community": 15,
+      "norm_label": "scanner interface",
+      "id": "cmd_get_scanner"
     },
     {
       "label": "doList command handler",
@@ -2116,9 +2151,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "cmd_list_doList",
-      "community": 3,
-      "norm_label": "dolist command handler"
+      "community": 4,
+      "norm_label": "dolist command handler",
+      "id": "cmd_list_doList"
     },
     {
       "label": "doRoot command handler",
@@ -2129,9 +2164,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "cmd_root_doRoot",
-      "community": 3,
-      "norm_label": "doroot command handler"
+      "community": 4,
+      "norm_label": "doroot command handler",
+      "id": "cmd_root_doRoot"
     },
     {
       "label": "doCreate command handler",
@@ -2142,12 +2177,12 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "cmd_create_doCreate",
-      "community": 3,
-      "norm_label": "docreate command handler"
+      "community": 4,
+      "norm_label": "docreate command handler",
+      "id": "cmd_create_doCreate"
     },
     {
-      "label": "RemoteRepository interface",
+      "label": "RemoteRepository Interface",
       "file_type": "code",
       "source_file": "remote_repository.go",
       "source_location": "line 15",
@@ -2155,12 +2190,12 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "remote_repository_RemoteRepository",
-      "community": 3,
-      "norm_label": "remoterepository interface"
+      "community": 4,
+      "norm_label": "remoterepository interface",
+      "id": "remote_repository_RemoteRepository"
     },
     {
-      "label": "GitHubRepository struct",
+      "label": "GitHubRepository",
       "file_type": "code",
       "source_file": "remote_repository.go",
       "source_location": "line 25",
@@ -2168,12 +2203,12 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "remote_repository_GitHubRepository",
-      "community": 3,
-      "norm_label": "githubrepository struct"
+      "community": 4,
+      "norm_label": "githubrepository",
+      "id": "remote_repository_GitHubRepository"
     },
     {
-      "label": "GitHubGistRepository struct",
+      "label": "GitHubGistRepository",
       "file_type": "code",
       "source_file": "remote_repository.go",
       "source_location": "line 57",
@@ -2181,12 +2216,12 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "remote_repository_GitHubGistRepository",
-      "community": 3,
-      "norm_label": "githubgistrepository struct"
+      "community": 4,
+      "norm_label": "githubgistrepository",
+      "id": "remote_repository_GitHubGistRepository"
     },
     {
-      "label": "DarksHubRepository struct",
+      "label": "DarksHubRepository",
       "file_type": "code",
       "source_file": "remote_repository.go",
       "source_location": "line 77",
@@ -2194,12 +2229,12 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "remote_repository_DarksHubRepository",
-      "community": 3,
-      "norm_label": "darkshubrepository struct"
+      "community": 4,
+      "norm_label": "darkshubrepository",
+      "id": "remote_repository_DarksHubRepository"
     },
     {
-      "label": "NestPijulRepository struct",
+      "label": "NestPijulRepository",
       "file_type": "code",
       "source_file": "remote_repository.go",
       "source_location": "line 97",
@@ -2207,12 +2242,12 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "remote_repository_NestPijulRepository",
-      "community": 3,
-      "norm_label": "nestpijulrepository struct"
+      "community": 4,
+      "norm_label": "nestpijulrepository",
+      "id": "remote_repository_NestPijulRepository"
     },
     {
-      "label": "CodeCommitRepository struct",
+      "label": "CodeCommitRepository",
       "file_type": "code",
       "source_file": "remote_repository.go",
       "source_location": "line 117",
@@ -2220,12 +2255,12 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "remote_repository_CodeCommitRepository",
-      "community": 3,
-      "norm_label": "codecommitrepository struct"
+      "community": 4,
+      "norm_label": "codecommitrepository",
+      "id": "remote_repository_CodeCommitRepository"
     },
     {
-      "label": "ChiselRepository struct",
+      "label": "ChiselRepository",
       "file_type": "code",
       "source_file": "remote_repository.go",
       "source_location": "line 137",
@@ -2233,12 +2268,12 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "remote_repository_ChiselRepository",
-      "community": 3,
-      "norm_label": "chiselrepository struct"
+      "community": 4,
+      "norm_label": "chiselrepository",
+      "id": "remote_repository_ChiselRepository"
     },
     {
-      "label": "OtherRepository struct",
+      "label": "OtherRepository",
       "file_type": "code",
       "source_file": "remote_repository.go",
       "source_location": "line 157",
@@ -2246,12 +2281,12 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "remote_repository_OtherRepository",
-      "community": 3,
-      "norm_label": "otherrepository struct"
+      "community": 4,
+      "norm_label": "otherrepository",
+      "id": "remote_repository_OtherRepository"
     },
     {
-      "label": "NewRemoteRepository factory",
+      "label": "NewRemoteRepository",
       "file_type": "code",
       "source_file": "remote_repository.go",
       "source_location": "line 236",
@@ -2259,12 +2294,12 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "remote_repository_NewRemoteRepository",
-      "community": 3,
-      "norm_label": "newremoterepository factory"
+      "community": 4,
+      "norm_label": "newremoterepository",
+      "id": "remote_repository_NewRemoteRepository"
     },
     {
-      "label": "VCSBackend struct",
+      "label": "VCSBackend Struct",
       "file_type": "code",
       "source_file": "vcs.go",
       "source_location": "line 33",
@@ -2272,12 +2307,12 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "vcs_VCSBackend",
-      "community": 20,
-      "norm_label": "vcsbackend struct"
+      "community": 16,
+      "norm_label": "vcsbackend struct",
+      "id": "vcs_VCSBackend"
     },
     {
-      "label": "GitBackend VCS",
+      "label": "GitBackend",
       "file_type": "code",
       "source_file": "vcs.go",
       "source_location": "line 98",
@@ -2285,9 +2320,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "vcs_GitBackend",
-      "community": 3,
-      "norm_label": "gitbackend vcs"
+      "community": 4,
+      "norm_label": "gitbackend",
+      "id": "vcs_GitBackend"
     },
     {
       "label": "SubversionBackend VCS",
@@ -2298,9 +2333,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "vcs_SubversionBackend",
-      "community": 21,
-      "norm_label": "subversionbackend vcs"
+      "community": 17,
+      "norm_label": "subversionbackend vcs",
+      "id": "vcs_SubversionBackend"
     },
     {
       "label": "GitsvnBackend VCS",
@@ -2311,9 +2346,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "vcs_GitsvnBackend",
-      "community": 3,
-      "norm_label": "gitsvnbackend vcs"
+      "community": 4,
+      "norm_label": "gitsvnbackend vcs",
+      "id": "vcs_GitsvnBackend"
     },
     {
       "label": "MercurialBackend VCS",
@@ -2324,9 +2359,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "vcs_MercurialBackend",
-      "community": 22,
-      "norm_label": "mercurialbackend vcs"
+      "community": 18,
+      "norm_label": "mercurialbackend vcs",
+      "id": "vcs_MercurialBackend"
     },
     {
       "label": "DarcsBackend VCS",
@@ -2337,9 +2372,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "vcs_DarcsBackend",
-      "community": 3,
-      "norm_label": "darcsbackend vcs"
+      "community": 4,
+      "norm_label": "darcsbackend vcs",
+      "id": "vcs_DarcsBackend"
     },
     {
       "label": "PijulBackend VCS",
@@ -2350,9 +2385,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "vcs_PijulBackend",
-      "community": 3,
-      "norm_label": "pijulbackend vcs"
+      "community": 4,
+      "norm_label": "pijulbackend vcs",
+      "id": "vcs_PijulBackend"
     },
     {
       "label": "FossilBackend VCS",
@@ -2363,9 +2398,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "vcs_FossilBackend",
-      "community": 3,
-      "norm_label": "fossilbackend vcs"
+      "community": 4,
+      "norm_label": "fossilbackend vcs",
+      "id": "vcs_FossilBackend"
     },
     {
       "label": "BazaarBackend VCS",
@@ -2376,9 +2411,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "vcs_BazaarBackend",
-      "community": 23,
-      "norm_label": "bazaarbackend vcs"
+      "community": 19,
+      "norm_label": "bazaarbackend vcs",
+      "id": "vcs_BazaarBackend"
     },
     {
       "label": "vcsRegistry map",
@@ -2389,9 +2424,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "vcs_vcsRegistry",
-      "community": 3,
-      "norm_label": "vcsregistry map"
+      "community": 4,
+      "norm_label": "vcsregistry map",
+      "id": "vcs_vcsRegistry"
     },
     {
       "label": "detectGoImport function",
@@ -2402,9 +2437,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "go_import_detectGoImport",
-      "community": 3,
-      "norm_label": "detectgoimport function"
+      "community": 4,
+      "norm_label": "detectgoimport function",
+      "id": "go_import_detectGoImport"
     },
     {
       "label": "metaImport struct",
@@ -2415,12 +2450,12 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "go_import_metaImport",
-      "community": 24,
-      "norm_label": "metaimport struct"
+      "community": 20,
+      "norm_label": "metaimport struct",
+      "id": "go_import_metaImport"
     },
     {
-      "label": "isLinkedGitDir function",
+      "label": "isLinkedGitDir",
       "file_type": "code",
       "source_file": "worktree.go",
       "source_location": "line 22",
@@ -2428,61 +2463,61 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "worktree_isLinkedGitDir",
-      "community": 25,
-      "norm_label": "islinkedgitdir function"
+      "community": 3,
+      "norm_label": "islinkedgitdir",
+      "id": "worktree_isLinkedGitDir"
     },
     {
-      "label": "hasLinkedWorktrees function",
+      "label": "hasLinkedWorktrees",
       "file_type": "code",
       "source_file": "worktree.go",
-      "source_location": "line 71",
+      "source_location": "line 69",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "worktree_hasLinkedWorktrees",
-      "community": 16,
-      "norm_label": "haslinkedworktrees function"
+      "community": 3,
+      "norm_label": "haslinkedworktrees",
+      "id": "worktree_hasLinkedWorktrees"
     },
     {
-      "label": "listLinkedWorktreePaths function",
+      "label": "listLinkedWorktreePaths",
       "file_type": "code",
       "source_file": "worktree.go",
-      "source_location": "line 90",
+      "source_location": "line 100",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "worktree_listLinkedWorktreePaths",
-      "community": 16,
-      "norm_label": "listlinkedworktreepaths function"
+      "community": 3,
+      "norm_label": "listlinkedworktreepaths",
+      "id": "worktree_listLinkedWorktreePaths"
     },
     {
-      "label": "repairWorktreeBackPointers function",
+      "label": "repairWorktreeBackPointers",
       "file_type": "code",
       "source_file": "worktree.go",
-      "source_location": "line 153",
+      "source_location": "line 176",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "worktree_repairWorktreeBackPointers",
-      "community": 16,
-      "norm_label": "repairworktreebackpointers function"
+      "community": 3,
+      "norm_label": "repairworktreebackpointers",
+      "id": "worktree_repairWorktreeBackPointers"
     },
     {
-      "label": "resolveMainRepoDir function",
+      "label": "resolveMainRepoDir",
       "file_type": "code",
       "source_file": "worktree.go",
-      "source_location": "line 133",
+      "source_location": "line 156",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "worktree_resolveMainRepoDir",
-      "community": 26,
-      "norm_label": "resolvemainrepodir function"
+      "community": 21,
+      "norm_label": "resolvemainrepodir",
+      "id": "worktree_resolveMainRepoDir"
     },
     {
       "label": "newApp (CLI app factory)",
@@ -2493,9 +2528,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "main_newApp",
-      "community": 17,
-      "norm_label": "newapp (cli app factory)"
+      "community": 3,
+      "norm_label": "newapp (cli app factory)",
+      "id": "main_newApp"
     },
     {
       "label": "main entrypoint",
@@ -2506,12 +2541,12 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "main_main",
-      "community": 17,
-      "norm_label": "main entrypoint"
+      "community": 3,
+      "norm_label": "main entrypoint",
+      "id": "main_main"
     },
     {
-      "label": "commands slice",
+      "label": "commands (CLI command registry)",
       "file_type": "code",
       "source_file": "commands.go",
       "source_location": "12",
@@ -2519,35 +2554,35 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "commands_commands",
-      "community": 17,
-      "norm_label": "commands slice"
+      "community": 3,
+      "norm_label": "commands (cli command registry)",
+      "id": "commands_commands"
     },
     {
-      "label": "commandGet definition",
+      "label": "commandGet (get/clone command)",
       "file_type": "code",
       "source_file": "commands.go",
-      "source_location": "21",
+      "source_location": "22",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "commands_commandGet",
-      "community": 27,
-      "norm_label": "commandget definition"
+      "community": 3,
+      "norm_label": "commandget (get/clone command)",
+      "id": "commands_commandGet"
     },
     {
-      "label": "commandList definition",
+      "label": "commandList (list command)",
       "file_type": "code",
       "source_file": "commands.go",
-      "source_location": "57",
+      "source_location": "58",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "commands_commandList",
-      "community": 28,
-      "norm_label": "commandlist definition"
+      "community": 3,
+      "norm_label": "commandlist (list command)",
+      "id": "commands_commandList"
     },
     {
       "label": "commandRm definition",
@@ -2558,9 +2593,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "commands_commandRm",
-      "community": 5,
-      "norm_label": "commandrm definition"
+      "community": 3,
+      "norm_label": "commandrm definition",
+      "id": "commands_commandRm"
     },
     {
       "label": "commandRoot definition",
@@ -2571,9 +2606,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "commands_commandRoot",
-      "community": 29,
-      "norm_label": "commandroot definition"
+      "community": 22,
+      "norm_label": "commandroot definition",
+      "id": "commands_commandRoot"
     },
     {
       "label": "commandCreate definition",
@@ -2584,35 +2619,35 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "commands_commandCreate",
-      "community": 30,
-      "norm_label": "commandcreate definition"
+      "community": 23,
+      "norm_label": "commandcreate definition",
+      "id": "commands_commandCreate"
     },
     {
-      "label": "commandMigrate definition",
+      "label": "commandMigrate (migrate command)",
       "file_type": "code",
       "source_file": "commands.go",
-      "source_location": "146",
+      "source_location": "148",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "commands_commandMigrate",
-      "community": 5,
-      "norm_label": "commandmigrate definition"
+      "community": 3,
+      "norm_label": "commandmigrate (migrate command)",
+      "id": "commands_commandMigrate"
     },
     {
-      "label": "doRm command handler",
+      "label": "doRm Command",
       "file_type": "code",
       "source_file": "cmd_rm.go",
-      "source_location": "14",
+      "source_location": "line 14",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "cmd_rm_doRm",
-      "community": 5,
-      "norm_label": "dorm command handler"
+      "community": 3,
+      "norm_label": "dorm command",
+      "id": "cmd_rm_doRm"
     },
     {
       "label": "confirm prompt",
@@ -2623,12 +2658,12 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "cmd_rm_confirm",
-      "community": 5,
-      "norm_label": "confirm prompt"
+      "community": 3,
+      "norm_label": "confirm prompt",
+      "id": "cmd_rm_confirm"
     },
     {
-      "label": "doMigrate command handler",
+      "label": "doMigrate",
       "file_type": "code",
       "source_file": "cmd_migrate.go",
       "source_location": "17",
@@ -2636,12 +2671,12 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "cmd_migrate_doMigrate",
-      "community": 5,
-      "norm_label": "domigrate command handler"
+      "community": 3,
+      "norm_label": "domigrate",
+      "id": "cmd_migrate_doMigrate"
     },
     {
-      "label": "moveDir (cross-device safe)",
+      "label": "moveDir",
       "file_type": "code",
       "source_file": "cmd_migrate.go",
       "source_location": "163",
@@ -2649,22 +2684,22 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "cmd_migrate_moveDir",
-      "community": 5,
-      "norm_label": "movedir (cross-device safe)"
+      "community": 3,
+      "norm_label": "movedir",
+      "id": "cmd_migrate_moveDir"
     },
     {
-      "label": "newURL (URL parser)",
+      "label": "newURL",
       "file_type": "code",
       "source_file": "url.go",
-      "source_location": "28",
+      "source_location": "line 28",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "url_newURL",
-      "community": 5,
-      "norm_label": "newurl (url parser)"
+      "community": 3,
+      "norm_label": "newurl",
+      "id": "url_newURL"
     },
     {
       "label": "convertGitURLHTTPToSSH",
@@ -2675,9 +2710,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "url_convertGitURLHTTPToSSH",
-      "community": 5,
-      "norm_label": "convertgiturlhttptossh"
+      "community": 3,
+      "norm_label": "convertgiturlhttptossh",
+      "id": "url_convertGitURLHTTPToSSH"
     },
     {
       "label": "detectUserName",
@@ -2688,9 +2723,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "url_detectUserName",
-      "community": 5,
-      "norm_label": "detectusername"
+      "community": 3,
+      "norm_label": "detectusername",
+      "id": "url_detectUserName"
     },
     {
       "label": "fillUsernameToPath",
@@ -2701,9 +2736,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "url_fillUsernameToPath",
-      "community": 5,
-      "norm_label": "fillusernametopath"
+      "community": 3,
+      "norm_label": "fillusernametopath",
+      "id": "url_fillUsernameToPath"
     },
     {
       "label": "LocalRepository struct",
@@ -2714,9 +2749,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "local_repository_LocalRepository",
-      "community": 31,
-      "norm_label": "localrepository struct"
+      "community": 24,
+      "norm_label": "localrepository struct",
+      "id": "local_repository_LocalRepository"
     },
     {
       "label": "LocalRepositoryFromURL",
@@ -2727,9 +2762,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "local_repository_LocalRepositoryFromURL",
-      "community": 5,
-      "norm_label": "localrepositoryfromurl"
+      "community": 3,
+      "norm_label": "localrepositoryfromurl",
+      "id": "local_repository_LocalRepositoryFromURL"
     },
     {
       "label": "LocalRepositoryFromFullPath",
@@ -2740,48 +2775,48 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "local_repository_LocalRepositoryFromFullPath",
-      "community": 5,
-      "norm_label": "localrepositoryfromfullpath"
+      "community": 3,
+      "norm_label": "localrepositoryfromfullpath",
+      "id": "local_repository_LocalRepositoryFromFullPath"
     },
     {
       "label": "localRepositoryRoots",
       "file_type": "code",
       "source_file": "local_repository.go",
-      "source_location": "354",
+      "source_location": "400",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "local_repository_localRepositoryRoots",
-      "community": 5,
-      "norm_label": "localrepositoryroots"
+      "community": 3,
+      "norm_label": "localrepositoryroots",
+      "id": "local_repository_localRepositoryRoots"
     },
     {
       "label": "walkLocalRepositories",
       "file_type": "code",
       "source_file": "local_repository.go",
-      "source_location": "262",
+      "source_location": "304",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "local_repository_walkLocalRepositories",
-      "community": 5,
-      "norm_label": "walklocalrepositories"
+      "community": 3,
+      "norm_label": "walklocalrepositories",
+      "id": "local_repository_walkLocalRepositories"
     },
     {
       "label": "findVCSBackend",
       "file_type": "code",
       "source_file": "local_repository.go",
-      "source_location": "230",
+      "source_location": "258",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "local_repository_findVCSBackend",
-      "community": 5,
-      "norm_label": "findvcsbackend"
+      "community": 3,
+      "norm_label": "findvcsbackend",
+      "id": "local_repository_findVCSBackend"
     },
     {
       "label": "getter struct",
@@ -2792,12 +2827,12 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "getter_getter",
-      "community": 32,
-      "norm_label": "getter struct"
+      "community": 25,
+      "norm_label": "getter struct",
+      "id": "getter_getter"
     },
     {
-      "label": "getter.get method",
+      "label": "getter.get",
       "file_type": "code",
       "source_file": "getter.go",
       "source_location": "32",
@@ -2805,9 +2840,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "getter_get",
-      "community": 5,
-      "norm_label": "getter.get method"
+      "community": 3,
+      "norm_label": "getter.get",
+      "id": "getter_get"
     },
     {
       "label": "getter.getRemoteRepository",
@@ -2818,9 +2853,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "getter_getRemoteRepository",
-      "community": 5,
-      "norm_label": "getter.getremoterepository"
+      "community": 3,
+      "norm_label": "getter.getremoterepository",
+      "id": "getter_getRemoteRepository"
     },
     {
       "label": "logger.Log function",
@@ -2831,9 +2866,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "logger_Log",
-      "community": 18,
-      "norm_label": "logger.log function"
+      "community": 10,
+      "norm_label": "logger.log function",
+      "id": "logger_Log"
     },
     {
       "label": "cmdutil.Run",
@@ -2844,9 +2879,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "cmdutil_Run",
-      "community": 18,
-      "norm_label": "cmdutil.run"
+      "community": 10,
+      "norm_label": "cmdutil.run",
+      "id": "cmdutil_Run"
     },
     {
       "label": "cmdutil.RunCommand",
@@ -2857,9 +2892,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "cmdutil_RunCommand",
-      "community": 18,
-      "norm_label": "cmdutil.runcommand"
+      "community": 10,
+      "norm_label": "cmdutil.runcommand",
+      "id": "cmdutil_RunCommand"
     },
     {
       "label": "RunError type",
@@ -2870,9 +2905,282 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "cmdutil_RunError",
-      "community": 33,
-      "norm_label": "runerror type"
+      "community": 26,
+      "norm_label": "runerror type",
+      "id": "cmdutil_RunError"
+    },
+    {
+      "label": "worktree_clone_test.go",
+      "file_type": "code",
+      "source_file": "worktree_clone_test.go",
+      "source_location": "L1",
+      "id": "worktree_clone_test_go",
+      "community": 0,
+      "norm_label": "worktree_clone_test.go"
+    },
+    {
+      "label": "TestGitWorktreeClone()",
+      "file_type": "code",
+      "source_file": "worktree_clone_test.go",
+      "source_location": "L10",
+      "id": "ghq_worktree_clone_test_testgitworktreeclone",
+      "community": 0,
+      "norm_label": "testgitworktreeclone()"
+    },
+    {
+      "label": "TestGitWorktreeCloneWithBranch()",
+      "file_type": "code",
+      "source_file": "worktree_clone_test.go",
+      "source_location": "L110",
+      "id": "ghq_worktree_clone_test_testgitworktreeclonewithbranch",
+      "community": 0,
+      "norm_label": "testgitworktreeclonewithbranch()"
+    },
+    {
+      "label": "TestGitBareCloneNoWorktree()",
+      "file_type": "code",
+      "source_file": "worktree_clone_test.go",
+      "source_location": "L163",
+      "id": "ghq_worktree_clone_test_testgitbareclonenoworktree",
+      "community": 0,
+      "norm_label": "testgitbareclonenoworktree()"
+    },
+    {
+      "label": "TestDetectDefaultBranch()",
+      "file_type": "code",
+      "source_file": "worktree_clone_test.go",
+      "source_location": "L195",
+      "id": "ghq_worktree_clone_test_testdetectdefaultbranch",
+      "community": 0,
+      "norm_label": "testdetectdefaultbranch()"
+    },
+    {
+      "label": "TestDetectDefaultBranchFallback()",
+      "file_type": "code",
+      "source_file": "worktree_clone_test.go",
+      "source_location": "L217",
+      "id": "ghq_worktree_clone_test_testdetectdefaultbranchfallback",
+      "community": 6,
+      "norm_label": "testdetectdefaultbranchfallback()"
+    },
+    {
+      "label": "branch.go",
+      "file_type": "code",
+      "source_file": "branch.go",
+      "source_location": "L1",
+      "id": "branch_go",
+      "community": 6,
+      "norm_label": "branch.go"
+    },
+    {
+      "label": "detectDefaultBranch()",
+      "file_type": "code",
+      "source_file": "branch.go",
+      "source_location": "L12",
+      "id": "ghq_branch_detectdefaultbranch",
+      "community": 6,
+      "norm_label": "detectdefaultbranch()"
+    },
+    {
+      "label": "hasWorktreeEntries()",
+      "file_type": "code",
+      "source_file": "worktree.go",
+      "source_location": "L82",
+      "id": "ghq_worktree_hasworktreeentries",
+      "community": 7,
+      "norm_label": "hasworktreeentries()"
+    },
+    {
+      "label": "listWorktreePathsFrom()",
+      "file_type": "code",
+      "source_file": "worktree.go",
+      "source_location": "L114",
+      "id": "ghq_worktree_listworktreepathsfrom",
+      "community": 7,
+      "norm_label": "listworktreepathsfrom()"
+    },
+    {
+      "label": "cmd_migrate_worktree.go",
+      "file_type": "code",
+      "source_file": "cmd_migrate_worktree.go",
+      "source_location": "L1",
+      "id": "cmd_migrate_worktree_go",
+      "community": 1,
+      "norm_label": "cmd_migrate_worktree.go"
+    },
+    {
+      "label": "doMigrateWorktree()",
+      "file_type": "code",
+      "source_file": "cmd_migrate_worktree.go",
+      "source_location": "L15",
+      "id": "ghq_cmd_migrate_worktree_domigrateworktree",
+      "community": 1,
+      "norm_label": "domigrateworktree()"
+    },
+    {
+      "label": "isGitFile()",
+      "file_type": "code",
+      "source_file": "local_repository.go",
+      "source_location": "L292",
+      "id": "ghq_local_repository_isgitfile",
+      "community": 1,
+      "norm_label": "isgitfile()"
+    },
+    {
+      "label": "getGitRemoteURL",
+      "file_type": "code",
+      "source_file": "vcs.go",
+      "source_location": "line 55",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "vcs_getGitRemoteURL",
+      "community": 27,
+      "norm_label": "getgitremoteurl"
+    },
+    {
+      "label": "vcsGetOption",
+      "file_type": "code",
+      "source_file": "vcs.go",
+      "source_location": "line 46",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "vcs_vcsGetOption",
+      "community": 28,
+      "norm_label": "vcsgetoption"
+    },
+    {
+      "label": "detectDefaultBranch",
+      "file_type": "code",
+      "source_file": "branch.go",
+      "source_location": "line 12",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "branch_detectDefaultBranch",
+      "community": 4,
+      "norm_label": "detectdefaultbranch"
+    },
+    {
+      "label": "isWorktreeGitDir",
+      "file_type": "code",
+      "source_file": "worktree.go",
+      "source_location": "line 61",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "worktree_isWorktreeGitDir",
+      "community": 3,
+      "norm_label": "isworktreegitdir"
+    },
+    {
+      "label": "doMigrateWorktree Command",
+      "file_type": "code",
+      "source_file": "cmd_migrate_worktree.go",
+      "source_location": "line 15",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "cmd_migrate_worktree_doMigrateWorktree",
+      "community": 3,
+      "norm_label": "domigrateworktree command"
+    },
+    {
+      "label": "commandMigrateWorktree (migrate-worktree command)",
+      "file_type": "code",
+      "source_file": "commands.go",
+      "source_location": "162",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "commands_commandMigrateWorktree",
+      "community": 3,
+      "norm_label": "commandmigrateworktree (migrate-worktree command)"
+    },
+    {
+      "label": "getRoot",
+      "file_type": "code",
+      "source_file": "local_repository.go",
+      "source_location": "138",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "local_repository_getRoot",
+      "community": 3,
+      "norm_label": "getroot"
+    },
+    {
+      "label": "cmdutil.RunInDir",
+      "file_type": "code",
+      "source_file": "cmdutil/run.go",
+      "source_location": "32",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "cmdutil_RunInDir",
+      "community": 10,
+      "norm_label": "cmdutil.runindir"
+    },
+    {
+      "label": "cmdutil.CommandRunner",
+      "file_type": "code",
+      "source_file": "cmdutil/run.go",
+      "source_location": "55",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "cmdutil_CommandRunner",
+      "community": 10,
+      "norm_label": "cmdutil.commandrunner"
+    },
+    {
+      "label": "evalSymlinks (unix)",
+      "file_type": "code",
+      "source_file": "helpers_unix.go",
+      "source_location": "11",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "helpers_unix_evalSymlinks",
+      "community": 3,
+      "norm_label": "evalsymlinks (unix)"
+    },
+    {
+      "label": "ghq - manage remote repository clones",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_ghq",
+      "community": 29,
+      "norm_label": "ghq - manage remote repository clones"
+    },
+    {
+      "label": "AGENTS.md architecture notes",
+      "file_type": "document",
+      "source_file": "AGENTS.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": "gnur",
+      "contributor": null,
+      "id": "agents_architecture",
+      "community": 30,
+      "norm_label": "agents.md architecture notes"
     }
   ],
   "links": [
@@ -5100,7 +5408,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "worktree.go",
-      "source_location": "L71",
+      "source_location": "L69",
       "weight": 1.0,
       "_src": "worktree_go",
       "_tgt": "ghq_worktree_haslinkedworktrees",
@@ -5112,7 +5420,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "worktree.go",
-      "source_location": "L90",
+      "source_location": "L100",
       "weight": 1.0,
       "_src": "worktree_go",
       "_tgt": "ghq_worktree_listlinkedworktreepaths",
@@ -5124,7 +5432,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "worktree.go",
-      "source_location": "L133",
+      "source_location": "L156",
       "weight": 1.0,
       "_src": "worktree_go",
       "_tgt": "ghq_worktree_resolvemainrepodir",
@@ -5136,13 +5444,37 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "worktree.go",
-      "source_location": "L153",
+      "source_location": "L176",
       "weight": 1.0,
       "_src": "worktree_go",
       "_tgt": "ghq_worktree_repairworktreebackpointers",
       "confidence_score": 1.0,
       "source": "worktree_go",
       "target": "ghq_worktree_repairworktreebackpointers"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "worktree.go",
+      "source_location": "L82",
+      "weight": 1.0,
+      "_src": "worktree_go",
+      "_tgt": "ghq_worktree_hasworktreeentries",
+      "source": "worktree_go",
+      "target": "ghq_worktree_hasworktreeentries",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "worktree.go",
+      "source_location": "L114",
+      "weight": 1.0,
+      "_src": "worktree_go",
+      "_tgt": "ghq_worktree_listworktreepathsfrom",
+      "source": "worktree_go",
+      "target": "ghq_worktree_listworktreepathsfrom",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5167,6 +5499,30 @@
       "confidence_score": 1.0,
       "source": "ghq_worktree_isnotadirectory",
       "target": "ghq_worktree_listlinkedworktreepaths"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "worktree.go",
+      "source_location": "L85",
+      "weight": 1.0,
+      "_src": "ghq_worktree_isnotadirectory",
+      "_tgt": "ghq_worktree_hasworktreeentries",
+      "source": "ghq_worktree_isnotadirectory",
+      "target": "ghq_worktree_hasworktreeentries",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "worktree.go",
+      "source_location": "L117",
+      "weight": 1.0,
+      "_src": "ghq_worktree_isnotadirectory",
+      "_tgt": "ghq_worktree_listworktreepathsfrom",
+      "source": "ghq_worktree_isnotadirectory",
+      "target": "ghq_worktree_listworktreepathsfrom",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5242,6 +5598,18 @@
     },
     {
       "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "worktree.go",
+      "source_location": "L72",
+      "weight": 1.0,
+      "_src": "ghq_worktree_haslinkedworktrees",
+      "_tgt": "ghq_worktree_hasworktreeentries",
+      "source": "ghq_worktree_haslinkedworktrees",
+      "target": "ghq_worktree_hasworktreeentries",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "cmd_rm.go",
@@ -5251,6 +5619,18 @@
       "_tgt": "ghq_cmd_rm_dorm",
       "source": "ghq_worktree_listlinkedworktreepaths",
       "target": "ghq_cmd_rm_dorm"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "worktree.go",
+      "source_location": "L102",
+      "weight": 1.0,
+      "_src": "ghq_worktree_listlinkedworktreepaths",
+      "_tgt": "ghq_worktree_listworktreepathsfrom",
+      "source": "ghq_worktree_listlinkedworktreepaths",
+      "target": "ghq_worktree_listworktreepathsfrom",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5340,7 +5720,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "vcs.go",
-      "source_location": "L184",
+      "source_location": "L233",
       "weight": 1.0,
       "_src": "vcs_go",
       "_tgt": "ghq_vcs_replaceonce",
@@ -5352,7 +5732,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "vcs.go",
-      "source_location": "L195",
+      "source_location": "L244",
       "weight": 1.0,
       "_src": "vcs_go",
       "_tgt": "ghq_vcs_svnbase",
@@ -5364,7 +5744,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "vcs.go",
-      "source_location": "L199",
+      "source_location": "L248",
       "weight": 1.0,
       "_src": "ghq_vcs_replaceonce",
       "_tgt": "ghq_vcs_svnbase",
@@ -5388,7 +5768,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "vcs_test.go",
-      "source_location": "L454",
+      "source_location": "L462",
       "weight": 1.0,
       "_src": "vcs_test_go",
       "_tgt": "ghq_vcs_test_testcvsdummybackend",
@@ -5400,7 +5780,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "vcs_test.go",
-      "source_location": "L480",
+      "source_location": "L488",
       "weight": 1.0,
       "_src": "vcs_test_go",
       "_tgt": "ghq_vcs_test_testbranchoptionignorederrors",
@@ -5425,7 +5805,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "vcs_test.go",
-      "source_location": "L439",
+      "source_location": "L447",
       "weight": 1.0,
       "_src": "ghq_vcs_test_testvcsbackend",
       "_tgt": "cmdutil_run_run",
@@ -5437,7 +5817,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "vcs_test.go",
-      "source_location": "L455",
+      "source_location": "L463",
       "weight": 1.0,
       "_src": "ghq_vcs_test_testcvsdummybackend",
       "_tgt": "ghq_helpers_test_newtempdir",
@@ -5449,7 +5829,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "vcs_test.go",
-      "source_location": "L462",
+      "source_location": "L470",
       "weight": 1.0,
       "_src": "ghq_vcs_test_testcvsdummybackend",
       "_tgt": "cmdutil_runerror_error",
@@ -5461,7 +5841,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "vcs_test.go",
-      "source_location": "L481",
+      "source_location": "L489",
       "weight": 1.0,
       "_src": "ghq_vcs_test_testbranchoptionignorederrors",
       "_tgt": "ghq_helpers_test_newtempdir",
@@ -5473,7 +5853,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "vcs_test.go",
-      "source_location": "L489",
+      "source_location": "L497",
       "weight": 1.0,
       "_src": "ghq_vcs_test_testbranchoptionignorederrors",
       "_tgt": "cmdutil_runerror_error",
@@ -5938,6 +6318,42 @@
     },
     {
       "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "worktree_clone_test.go",
+      "source_location": "L60",
+      "weight": 1.0,
+      "_src": "ghq_helpers_test_mustparseurl",
+      "_tgt": "ghq_worktree_clone_test_testgitworktreeclone",
+      "source": "ghq_helpers_test_mustparseurl",
+      "target": "ghq_worktree_clone_test_testgitworktreeclone"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "worktree_clone_test.go",
+      "source_location": "L146",
+      "weight": 1.0,
+      "_src": "ghq_helpers_test_mustparseurl",
+      "_tgt": "ghq_worktree_clone_test_testgitworktreeclonewithbranch",
+      "source": "ghq_helpers_test_mustparseurl",
+      "target": "ghq_worktree_clone_test_testgitworktreeclonewithbranch"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "worktree_clone_test.go",
+      "source_location": "L174",
+      "weight": 1.0,
+      "_src": "ghq_helpers_test_mustparseurl",
+      "_tgt": "ghq_worktree_clone_test_testgitbareclonenoworktree",
+      "source": "ghq_helpers_test_mustparseurl",
+      "target": "ghq_worktree_clone_test_testgitbareclonenoworktree"
+    },
+    {
+      "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "helpers_test.go",
       "source_location": "L50",
@@ -6151,6 +6567,54 @@
       "_tgt": "ghq_local_repository_test_testlocalrepository_vcs",
       "source": "ghq_helpers_test_newtempdir",
       "target": "ghq_local_repository_test_testlocalrepository_vcs"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "worktree_clone_test.go",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_src": "ghq_helpers_test_newtempdir",
+      "_tgt": "ghq_worktree_clone_test_testgitworktreeclone",
+      "source": "ghq_helpers_test_newtempdir",
+      "target": "ghq_worktree_clone_test_testgitworktreeclone"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "worktree_clone_test.go",
+      "source_location": "L112",
+      "weight": 1.0,
+      "_src": "ghq_helpers_test_newtempdir",
+      "_tgt": "ghq_worktree_clone_test_testgitworktreeclonewithbranch",
+      "source": "ghq_helpers_test_newtempdir",
+      "target": "ghq_worktree_clone_test_testgitworktreeclonewithbranch"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "worktree_clone_test.go",
+      "source_location": "L165",
+      "weight": 1.0,
+      "_src": "ghq_helpers_test_newtempdir",
+      "_tgt": "ghq_worktree_clone_test_testgitbareclonenoworktree",
+      "source": "ghq_helpers_test_newtempdir",
+      "target": "ghq_worktree_clone_test_testgitbareclonenoworktree"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "worktree_clone_test.go",
+      "source_location": "L197",
+      "weight": 1.0,
+      "_src": "ghq_helpers_test_newtempdir",
+      "_tgt": "ghq_worktree_clone_test_testdetectdefaultbranch",
+      "source": "ghq_helpers_test_newtempdir",
+      "target": "ghq_worktree_clone_test_testdetectdefaultbranch"
     },
     {
       "relation": "calls",
@@ -6816,6 +7280,18 @@
       "relation": "calls",
       "confidence": "INFERRED",
       "confidence_score": 0.8,
+      "source_file": "cmd_migrate_worktree.go",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_src": "ghq_url_newurl",
+      "_tgt": "ghq_cmd_migrate_worktree_domigrateworktree",
+      "source": "ghq_url_newurl",
+      "target": "ghq_cmd_migrate_worktree_domigrateworktree"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
       "source_file": "url_test.go",
       "source_location": "L119",
       "weight": 1.0,
@@ -7368,7 +7844,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "commands.go",
-      "source_location": "L105",
+      "source_location": "L106",
       "weight": 1.0,
       "_src": "commands_go",
       "_tgt": "ghq_commanddoc",
@@ -7380,7 +7856,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "commands.go",
-      "source_location": "L120",
+      "source_location": "L122",
       "weight": 1.0,
       "_src": "commands_go",
       "_tgt": "ghq_commands_mkcommandstemplate",
@@ -7392,7 +7868,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "commands.go",
-      "source_location": "L128",
+      "source_location": "L130",
       "weight": 1.0,
       "_src": "commands_go",
       "_tgt": "ghq_commands_init",
@@ -7404,7 +7880,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "commands.go",
-      "source_location": "L129",
+      "source_location": "L131",
       "weight": 1.0,
       "_src": "ghq_commands_mkcommandstemplate",
       "_tgt": "ghq_commands_init",
@@ -7536,7 +8012,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L124",
+      "source_location": "L138",
       "weight": 1.0,
       "_src": "local_repository_go",
       "_tgt": "ghq_local_repository_getroot",
@@ -7548,7 +8024,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L230",
+      "source_location": "L258",
       "weight": 1.0,
       "_src": "local_repository_go",
       "_tgt": "ghq_local_repository_findvcsbackend",
@@ -7560,7 +8036,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L258",
+      "source_location": "L300",
       "weight": 1.0,
       "_src": "local_repository_go",
       "_tgt": "ghq_local_repository_walkalllocalrepositories",
@@ -7572,7 +8048,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L262",
+      "source_location": "L304",
       "weight": 1.0,
       "_src": "local_repository_go",
       "_tgt": "ghq_local_repository_walklocalrepositories",
@@ -7584,7 +8060,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L333",
+      "source_location": "L379",
       "weight": 1.0,
       "_src": "local_repository_go",
       "_tgt": "ghq_local_repository_gethome",
@@ -7596,7 +8072,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L354",
+      "source_location": "L400",
       "weight": 1.0,
       "_src": "local_repository_go",
       "_tgt": "ghq_local_repository_localrepositoryroots",
@@ -7608,7 +8084,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L419",
+      "source_location": "L465",
       "weight": 1.0,
       "_src": "local_repository_go",
       "_tgt": "ghq_local_repository_urlmatchlocalrepositoryroots",
@@ -7620,13 +8096,25 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L436",
+      "source_location": "L482",
       "weight": 1.0,
       "_src": "local_repository_go",
       "_tgt": "ghq_local_repository_primarylocalrepositoryroot",
       "confidence_score": 1.0,
       "source": "local_repository_go",
       "target": "ghq_local_repository_primarylocalrepositoryroot"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "local_repository.go",
+      "source_location": "L292",
+      "weight": 1.0,
+      "_src": "local_repository_go",
+      "_tgt": "ghq_local_repository_isgitfile",
+      "source": "local_repository_go",
+      "target": "ghq_local_repository_isgitfile",
+      "confidence_score": 1.0
     },
     {
       "relation": "method",
@@ -7644,7 +8132,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L147",
+      "source_location": "L161",
       "weight": 1.0,
       "_src": "ghq_localrepository",
       "_tgt": "ghq_localrepository_subpaths",
@@ -7656,7 +8144,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L158",
+      "source_location": "L172",
       "weight": 1.0,
       "_src": "ghq_localrepository",
       "_tgt": "ghq_localrepository_nonhostpath",
@@ -7668,7 +8156,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L166",
+      "source_location": "L180",
       "weight": 1.0,
       "_src": "ghq_localrepository",
       "_tgt": "ghq_localrepository_reporootcandidates",
@@ -7680,7 +8168,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L178",
+      "source_location": "L192",
       "weight": 1.0,
       "_src": "ghq_localrepository",
       "_tgt": "ghq_localrepository_isunderprimaryroot",
@@ -7692,7 +8180,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L187",
+      "source_location": "L201",
       "weight": 1.0,
       "_src": "ghq_localrepository",
       "_tgt": "ghq_localrepository_matches",
@@ -7704,7 +8192,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L192",
+      "source_location": "L206",
       "weight": 1.0,
       "_src": "ghq_localrepository",
       "_tgt": "ghq_localrepository_vcs",
@@ -7716,7 +8204,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L203",
+      "source_location": "L213",
       "weight": 1.0,
       "_src": "ghq_localrepository_repopath",
       "_tgt": "ghq_localrepository_vcs",
@@ -7740,7 +8228,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L289",
+      "source_location": "L335",
       "weight": 1.0,
       "_src": "ghq_local_repository_localrepositoryfromfullpath",
       "_tgt": "ghq_local_repository_walklocalrepositories",
@@ -7764,7 +8252,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L110",
+      "source_location": "L112",
       "weight": 1.0,
       "_src": "ghq_local_repository_localrepositoryfromurl",
       "_tgt": "ghq_local_repository_getroot",
@@ -7798,9 +8286,21 @@
     },
     {
       "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "cmd_migrate_worktree.go",
+      "source_location": "L36",
+      "weight": 1.0,
+      "_src": "ghq_local_repository_localrepositoryfromurl",
+      "_tgt": "ghq_cmd_migrate_worktree_domigrateworktree",
+      "source": "ghq_local_repository_localrepositoryfromurl",
+      "target": "ghq_cmd_migrate_worktree_domigrateworktree"
+    },
+    {
+      "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L137",
+      "source_location": "L151",
       "weight": 1.0,
       "_src": "ghq_local_repository_getroot",
       "_tgt": "ghq_local_repository_primarylocalrepositoryroot",
@@ -7812,7 +8312,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L188",
+      "source_location": "L202",
       "weight": 1.0,
       "_src": "ghq_localrepository_subpaths",
       "_tgt": "ghq_localrepository_matches",
@@ -7824,7 +8324,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L194",
+      "source_location": "L222",
       "weight": 1.0,
       "_src": "ghq_localrepository_reporootcandidates",
       "_tgt": "ghq_localrepository_vcs",
@@ -7836,7 +8336,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L179",
+      "source_location": "L193",
       "weight": 1.0,
       "_src": "ghq_localrepository_isunderprimaryroot",
       "_tgt": "ghq_local_repository_primarylocalrepositoryroot",
@@ -7848,7 +8348,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L195",
+      "source_location": "L223",
       "weight": 1.0,
       "_src": "ghq_localrepository_vcs",
       "_tgt": "ghq_local_repository_findvcsbackend",
@@ -7861,7 +8361,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "getter.go",
-      "source_location": "L91",
+      "source_location": "L70",
       "weight": 1.0,
       "_src": "ghq_localrepository_vcs",
       "_tgt": "ghq_getter_getremoterepository",
@@ -7872,7 +8372,19 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L284",
+      "source_location": "L210",
+      "weight": 1.0,
+      "_src": "ghq_localrepository_vcs",
+      "_tgt": "ghq_local_repository_isgitfile",
+      "source": "ghq_localrepository_vcs",
+      "target": "ghq_local_repository_isgitfile",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "local_repository.go",
+      "source_location": "L330",
       "weight": 1.0,
       "_src": "ghq_local_repository_findvcsbackend",
       "_tgt": "ghq_local_repository_walklocalrepositories",
@@ -7896,7 +8408,19 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L259",
+      "source_location": "L279",
+      "weight": 1.0,
+      "_src": "ghq_local_repository_findvcsbackend",
+      "_tgt": "ghq_local_repository_isgitfile",
+      "source": "ghq_local_repository_findvcsbackend",
+      "target": "ghq_local_repository_isgitfile",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "local_repository.go",
+      "source_location": "L301",
       "weight": 1.0,
       "_src": "ghq_local_repository_walkalllocalrepositories",
       "_tgt": "ghq_local_repository_walklocalrepositories",
@@ -7908,7 +8432,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L263",
+      "source_location": "L305",
       "weight": 1.0,
       "_src": "ghq_local_repository_walklocalrepositories",
       "_tgt": "ghq_local_repository_localrepositoryroots",
@@ -7921,7 +8445,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "local_repository.go",
-      "source_location": "L272",
+      "source_location": "L314",
       "weight": 1.0,
       "_src": "ghq_local_repository_walklocalrepositories",
       "_tgt": "ghq_helpers_unix_evalsymlinks",
@@ -7933,7 +8457,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "local_repository.go",
-      "source_location": "L303",
+      "source_location": "L349",
       "weight": 1.0,
       "_src": "ghq_local_repository_walklocalrepositories",
       "_tgt": "logger_log_log",
@@ -7944,7 +8468,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L376",
+      "source_location": "L422",
       "weight": 1.0,
       "_src": "ghq_local_repository_gethome",
       "_tgt": "ghq_local_repository_localrepositoryroots",
@@ -7956,7 +8480,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L385",
+      "source_location": "L431",
       "weight": 1.0,
       "_src": "ghq_local_repository_localrepositoryroots",
       "_tgt": "ghq_local_repository_urlmatchlocalrepositoryroots",
@@ -7968,7 +8492,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "local_repository.go",
-      "source_location": "L437",
+      "source_location": "L483",
       "weight": 1.0,
       "_src": "ghq_local_repository_localrepositoryroots",
       "_tgt": "ghq_local_repository_primarylocalrepositoryroot",
@@ -7981,7 +8505,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "local_repository.go",
-      "source_location": "L397",
+      "source_location": "L443",
       "weight": 1.0,
       "_src": "ghq_local_repository_localrepositoryroots",
       "_tgt": "ghq_helpers_unix_evalsymlinks",
@@ -8172,7 +8696,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "getter.go",
-      "source_location": "L146",
+      "source_location": "L201",
       "weight": 1.0,
       "_src": "getter_go",
       "_tgt": "ghq_getter_detectlocalreporoot",
@@ -8184,7 +8708,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "getter.go",
-      "source_location": "L107",
+      "source_location": "L92",
       "weight": 1.0,
       "_src": "ghq_getter_getrepolock",
       "_tgt": "ghq_getter_getremoterepository",
@@ -8232,7 +8756,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "getter.go",
-      "source_location": "L96",
+      "source_location": "L140",
       "weight": 1.0,
       "_src": "ghq_getter_getremoterepository",
       "_tgt": "ghq_getter_detectlocalreporoot",
@@ -8245,12 +8769,24 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "getter.go",
-      "source_location": "L81",
+      "source_location": "L91",
       "weight": 1.0,
       "_src": "ghq_getter_getremoterepository",
       "_tgt": "logger_log_log",
       "source": "ghq_getter_getremoterepository",
       "target": "logger_log_log"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "getter.go",
+      "source_location": "L85",
+      "weight": 1.0,
+      "_src": "ghq_getter_getremoterepository",
+      "_tgt": "ghq_branch_detectdefaultbranch",
+      "source": "ghq_getter_getremoterepository",
+      "target": "ghq_branch_detectdefaultbranch"
     },
     {
       "relation": "calls",
@@ -8448,6 +8984,18 @@
       "relation": "calls",
       "confidence": "INFERRED",
       "confidence_score": 0.8,
+      "source_file": "cmd_migrate_worktree.go",
+      "source_location": "L92",
+      "weight": 1.0,
+      "_src": "logger_log_log",
+      "_tgt": "ghq_cmd_migrate_worktree_domigrateworktree",
+      "source": "logger_log_log",
+      "target": "ghq_cmd_migrate_worktree_domigrateworktree"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
       "source_file": "logger/log_test.go",
       "source_location": "L10",
       "weight": 1.0,
@@ -8590,6 +9138,66 @@
     },
     {
       "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "worktree_clone_test.go",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_src": "cmdutil_run_run",
+      "_tgt": "ghq_worktree_clone_test_testgitworktreeclone",
+      "source": "cmdutil_run_run",
+      "target": "ghq_worktree_clone_test_testgitworktreeclone"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "worktree_clone_test.go",
+      "source_location": "L115",
+      "weight": 1.0,
+      "_src": "cmdutil_run_run",
+      "_tgt": "ghq_worktree_clone_test_testgitworktreeclonewithbranch",
+      "source": "cmdutil_run_run",
+      "target": "ghq_worktree_clone_test_testgitworktreeclonewithbranch"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "worktree_clone_test.go",
+      "source_location": "L168",
+      "weight": 1.0,
+      "_src": "cmdutil_run_run",
+      "_tgt": "ghq_worktree_clone_test_testgitbareclonenoworktree",
+      "source": "cmdutil_run_run",
+      "target": "ghq_worktree_clone_test_testgitbareclonenoworktree"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "worktree_clone_test.go",
+      "source_location": "L200",
+      "weight": 1.0,
+      "_src": "cmdutil_run_run",
+      "_tgt": "ghq_worktree_clone_test_testdetectdefaultbranch",
+      "source": "cmdutil_run_run",
+      "target": "ghq_worktree_clone_test_testdetectdefaultbranch"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "cmd_migrate_worktree.go",
+      "source_location": "L102",
+      "weight": 1.0,
+      "_src": "cmdutil_run_run",
+      "_tgt": "ghq_cmd_migrate_worktree_domigrateworktree",
+      "source": "cmdutil_run_run",
+      "target": "ghq_cmd_migrate_worktree_domigrateworktree"
+    },
+    {
+      "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "cmdutil/run.go",
       "source_location": "L28",
@@ -8671,6 +9279,30 @@
       "confidence_score": 1.0,
       "source": "cmdutil_runerror",
       "target": "cmdutil_runerror_error"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "worktree_clone_test.go",
+      "source_location": "L88",
+      "weight": 1.0,
+      "_src": "cmdutil_runerror_error",
+      "_tgt": "ghq_worktree_clone_test_testgitworktreeclone",
+      "source": "cmdutil_runerror_error",
+      "target": "ghq_worktree_clone_test_testgitworktreeclone"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "worktree_clone_test.go",
+      "source_location": "L186",
+      "weight": 1.0,
+      "_src": "cmdutil_runerror_error",
+      "_tgt": "ghq_worktree_clone_test_testgitbareclonenoworktree",
+      "source": "cmdutil_runerror_error",
+      "target": "ghq_worktree_clone_test_testgitbareclonenoworktree"
     },
     {
       "relation": "contains",
@@ -8767,6 +9399,30 @@
       "_tgt": "cmd_list_doList",
       "source": "cmd_get_doGet",
       "target": "cmd_list_doList"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "cmd_get.go",
+      "source_location": null,
+      "weight": 0.9,
+      "_src": "cmd_get_doGet",
+      "_tgt": "remote_repository_NewRemoteRepository",
+      "source": "cmd_get_doGet",
+      "target": "remote_repository_NewRemoteRepository"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "cmd_get.go",
+      "source_location": null,
+      "weight": 0.9,
+      "_src": "cmd_get_doGet",
+      "_tgt": "url_newURL",
+      "source": "cmd_get_doGet",
+      "target": "url_newURL"
     },
     {
       "relation": "calls",
@@ -8918,7 +9574,7 @@
       "confidence_score": 1.0,
       "source_file": "remote_repository.go",
       "source_location": "line 243",
-      "weight": 1.0,
+      "weight": 0.8,
       "_src": "remote_repository_GitHubRepository",
       "_tgt": "remote_repository_NewRemoteRepository",
       "source": "remote_repository_GitHubRepository",
@@ -8990,7 +9646,7 @@
       "confidence_score": 1.0,
       "source_file": "remote_repository.go",
       "source_location": "line 253",
-      "weight": 1.0,
+      "weight": 0.8,
       "_src": "remote_repository_OtherRepository",
       "_tgt": "remote_repository_NewRemoteRepository",
       "source": "remote_repository_OtherRepository",
@@ -9022,6 +9678,18 @@
     },
     {
       "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "remote_repository.go",
+      "source_location": "line 214",
+      "weight": 0.8,
+      "_src": "remote_repository_OtherRepository",
+      "_tgt": "vcs_GitBackend",
+      "source": "remote_repository_OtherRepository",
+      "target": "vcs_GitBackend"
+    },
+    {
+      "relation": "references",
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "vcs.go",
@@ -9031,6 +9699,42 @@
       "_tgt": "vcs_GitsvnBackend",
       "source": "vcs_GitBackend",
       "target": "vcs_GitsvnBackend"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "vcs.go",
+      "source_location": "line 151",
+      "weight": 1.0,
+      "_src": "vcs_GitBackend",
+      "_tgt": "branch_detectDefaultBranch",
+      "source": "vcs_GitBackend",
+      "target": "branch_detectDefaultBranch"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "cmd_rm.go",
+      "source_location": "line 48",
+      "weight": 1.0,
+      "_src": "worktree_isLinkedGitDir",
+      "_tgt": "cmd_rm_doRm",
+      "source": "worktree_isLinkedGitDir",
+      "target": "cmd_rm_doRm"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "worktree.go",
+      "source_location": null,
+      "weight": 0.7,
+      "_src": "worktree_isLinkedGitDir",
+      "_tgt": "worktree_hasLinkedWorktrees",
+      "source": "worktree_isLinkedGitDir",
+      "target": "worktree_hasLinkedWorktrees"
     },
     {
       "relation": "semantically_similar_to",
@@ -9043,6 +9747,18 @@
       "_tgt": "worktree_listLinkedWorktreePaths",
       "source": "worktree_hasLinkedWorktrees",
       "target": "worktree_listLinkedWorktreePaths"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "cmd_rm.go",
+      "source_location": "line 58",
+      "weight": 1.0,
+      "_src": "worktree_hasLinkedWorktrees",
+      "_tgt": "cmd_rm_doRm",
+      "source": "worktree_hasLinkedWorktrees",
+      "target": "cmd_rm_doRm"
     },
     {
       "relation": "semantically_similar_to",
@@ -9085,6 +9801,54 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "commands.go",
+      "source_location": "13",
+      "weight": 1.0,
+      "_src": "commands_commands",
+      "_tgt": "commands_commandGet",
+      "source": "commands_commands",
+      "target": "commands_commandGet"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "commands.go",
+      "source_location": "14",
+      "weight": 1.0,
+      "_src": "commands_commands",
+      "_tgt": "commands_commandList",
+      "source": "commands_commands",
+      "target": "commands_commandList"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "commands.go",
+      "source_location": "18",
+      "weight": 1.0,
+      "_src": "commands_commands",
+      "_tgt": "commands_commandMigrate",
+      "source": "commands_commands",
+      "target": "commands_commandMigrate"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "commands.go",
+      "source_location": "19",
+      "weight": 1.0,
+      "_src": "commands_commands",
+      "_tgt": "commands_commandMigrateWorktree",
+      "source": "commands_commands",
+      "target": "commands_commandMigrateWorktree"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "commands.go",
       "source_location": "79",
       "weight": 1.0,
       "_src": "commands_commandRm",
@@ -9109,7 +9873,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "cmd_rm.go",
-      "source_location": "26",
+      "source_location": "line 26",
       "weight": 1.0,
       "_src": "cmd_rm_doRm",
       "_tgt": "url_newURL",
@@ -9151,6 +9915,30 @@
       "_tgt": "cmd_migrate_doMigrate",
       "source": "cmd_rm_doRm",
       "target": "cmd_migrate_doMigrate"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "cmd_rm.go",
+      "source_location": "line 50",
+      "weight": 1.0,
+      "_src": "cmd_rm_doRm",
+      "_tgt": "worktree_isWorktreeGitDir",
+      "source": "cmd_rm_doRm",
+      "target": "worktree_isWorktreeGitDir"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.65,
+      "source_file": null,
+      "source_location": null,
+      "weight": 0.5,
+      "_src": "cmd_rm_doRm",
+      "_tgt": "cmd_migrate_worktree_doMigrateWorktree",
+      "source": "cmd_rm_doRm",
+      "target": "cmd_migrate_worktree_doMigrateWorktree"
     },
     {
       "relation": "calls",
@@ -9213,6 +10001,18 @@
       "target": "cmd_migrate_moveDir"
     },
     {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7,
+      "source_file": "cmd_migrate.go",
+      "source_location": null,
+      "weight": 0.7,
+      "_src": "cmd_migrate_doMigrate",
+      "_tgt": "getter_getRemoteRepository",
+      "source": "cmd_migrate_doMigrate",
+      "target": "getter_getRemoteRepository"
+    },
+    {
       "relation": "calls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
@@ -9264,6 +10064,18 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
+      "source_file": "cmd_migrate_worktree.go",
+      "source_location": "line 32",
+      "weight": 1.0,
+      "_src": "url_newURL",
+      "_tgt": "cmd_migrate_worktree_doMigrateWorktree",
+      "source": "url_newURL",
+      "target": "cmd_migrate_worktree_doMigrateWorktree"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
       "source_file": "url.go",
       "source_location": "206",
       "weight": 1.0,
@@ -9298,10 +10110,46 @@
     },
     {
       "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "getter.go",
+      "source_location": "46",
+      "weight": 1.0,
+      "_src": "local_repository_LocalRepositoryFromURL",
+      "_tgt": "getter_get",
+      "source": "local_repository_LocalRepositoryFromURL",
+      "target": "getter_get"
+    },
+    {
+      "relation": "calls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "local_repository.go",
-      "source_location": "289",
+      "source_location": "112",
+      "weight": 1.0,
+      "_src": "local_repository_LocalRepositoryFromURL",
+      "_tgt": "local_repository_getRoot",
+      "source": "local_repository_LocalRepositoryFromURL",
+      "target": "local_repository_getRoot"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "local_repository.go",
+      "source_location": null,
+      "weight": 0.8,
+      "_src": "local_repository_LocalRepositoryFromURL",
+      "_tgt": "local_repository_LocalRepositoryFromFullPath",
+      "source": "local_repository_LocalRepositoryFromURL",
+      "target": "local_repository_LocalRepositoryFromFullPath"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "local_repository.go",
+      "source_location": "335",
       "weight": 1.0,
       "_src": "local_repository_LocalRepositoryFromFullPath",
       "_tgt": "local_repository_walkLocalRepositories",
@@ -9313,7 +10161,31 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "local_repository.go",
-      "source_location": "284",
+      "source_location": "305",
+      "weight": 1.0,
+      "_src": "local_repository_localRepositoryRoots",
+      "_tgt": "local_repository_walkLocalRepositories",
+      "source": "local_repository_localRepositoryRoots",
+      "target": "local_repository_walkLocalRepositories"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "local_repository.go",
+      "source_location": "443",
+      "weight": 1.0,
+      "_src": "local_repository_localRepositoryRoots",
+      "_tgt": "helpers_unix_evalSymlinks",
+      "source": "local_repository_localRepositoryRoots",
+      "target": "helpers_unix_evalSymlinks"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "local_repository.go",
+      "source_location": "330",
       "weight": 1.0,
       "_src": "local_repository_walkLocalRepositories",
       "_tgt": "local_repository_findVCSBackend",
@@ -9355,40 +10227,153 @@
       "_tgt": "cmdutil_RunCommand",
       "source": "cmdutil_Run",
       "target": "cmdutil_RunCommand"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "cmdutil/run.go",
+      "source_location": "38",
+      "weight": 1.0,
+      "_src": "cmdutil_RunCommand",
+      "_tgt": "cmdutil_RunInDir",
+      "source": "cmdutil_RunCommand",
+      "target": "cmdutil_RunInDir"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "cmdutil/run.go",
+      "source_location": "64",
+      "weight": 1.0,
+      "_src": "cmdutil_RunCommand",
+      "_tgt": "cmdutil_CommandRunner",
+      "source": "cmdutil_RunCommand",
+      "target": "cmdutil_CommandRunner"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "worktree_clone_test.go",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_src": "worktree_clone_test_go",
+      "_tgt": "ghq_worktree_clone_test_testgitworktreeclone",
+      "source": "worktree_clone_test_go",
+      "target": "ghq_worktree_clone_test_testgitworktreeclone",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "worktree_clone_test.go",
+      "source_location": "L110",
+      "weight": 1.0,
+      "_src": "worktree_clone_test_go",
+      "_tgt": "ghq_worktree_clone_test_testgitworktreeclonewithbranch",
+      "source": "worktree_clone_test_go",
+      "target": "ghq_worktree_clone_test_testgitworktreeclonewithbranch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "worktree_clone_test.go",
+      "source_location": "L163",
+      "weight": 1.0,
+      "_src": "worktree_clone_test_go",
+      "_tgt": "ghq_worktree_clone_test_testgitbareclonenoworktree",
+      "source": "worktree_clone_test_go",
+      "target": "ghq_worktree_clone_test_testgitbareclonenoworktree",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "worktree_clone_test.go",
+      "source_location": "L195",
+      "weight": 1.0,
+      "_src": "worktree_clone_test_go",
+      "_tgt": "ghq_worktree_clone_test_testdetectdefaultbranch",
+      "source": "worktree_clone_test_go",
+      "target": "ghq_worktree_clone_test_testdetectdefaultbranch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "worktree_clone_test.go",
+      "source_location": "L217",
+      "weight": 1.0,
+      "_src": "worktree_clone_test_go",
+      "_tgt": "ghq_worktree_clone_test_testdetectdefaultbranchfallback",
+      "source": "worktree_clone_test_go",
+      "target": "ghq_worktree_clone_test_testdetectdefaultbranchfallback",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "worktree_clone_test.go",
+      "source_location": "L211",
+      "weight": 1.0,
+      "_src": "ghq_worktree_clone_test_testdetectdefaultbranch",
+      "_tgt": "ghq_branch_detectdefaultbranch",
+      "source": "ghq_worktree_clone_test_testdetectdefaultbranch",
+      "target": "ghq_branch_detectdefaultbranch"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "worktree_clone_test.go",
+      "source_location": "L219",
+      "weight": 1.0,
+      "_src": "ghq_worktree_clone_test_testdetectdefaultbranchfallback",
+      "_tgt": "ghq_branch_detectdefaultbranch",
+      "source": "ghq_worktree_clone_test_testdetectdefaultbranchfallback",
+      "target": "ghq_branch_detectdefaultbranch"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "branch.go",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_src": "branch_go",
+      "_tgt": "ghq_branch_detectdefaultbranch",
+      "source": "branch_go",
+      "target": "ghq_branch_detectdefaultbranch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "cmd_migrate_worktree.go",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_src": "cmd_migrate_worktree_go",
+      "_tgt": "ghq_cmd_migrate_worktree_domigrateworktree",
+      "source": "cmd_migrate_worktree_go",
+      "target": "ghq_cmd_migrate_worktree_domigrateworktree",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7,
+      "source_file": "cmd_migrate_worktree.go",
+      "source_location": "line 63",
+      "weight": 0.6,
+      "_src": "branch_detectDefaultBranch",
+      "_tgt": "cmd_migrate_worktree_doMigrateWorktree",
+      "source": "branch_detectDefaultBranch",
+      "target": "cmd_migrate_worktree_doMigrateWorktree"
     }
   ],
   "hyperedges": [
-    {
-      "nodes": [
-        "remote_repository_GitHubRepository",
-        "remote_repository_GitHubGistRepository",
-        "remote_repository_DarksHubRepository",
-        "remote_repository_NestPijulRepository",
-        "remote_repository_CodeCommitRepository",
-        "remote_repository_ChiselRepository",
-        "remote_repository_OtherRepository"
-      ],
-      "relation": "RemoteRepository implementations dispatched by NewRemoteRepository",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "remote_repository.go"
-    },
-    {
-      "nodes": [
-        "vcs_GitBackend",
-        "vcs_SubversionBackend",
-        "vcs_GitsvnBackend",
-        "vcs_MercurialBackend",
-        "vcs_DarcsBackend",
-        "vcs_PijulBackend",
-        "vcs_FossilBackend",
-        "vcs_BazaarBackend"
-      ],
-      "relation": "VCS backend registry entries",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "vcs.go"
-    },
     {
       "nodes": [
         "cmd_get_doGet",
@@ -9402,26 +10387,92 @@
       "source_file": "cmd_root.go"
     },
     {
+      "id": "worktree_management_flow",
+      "label": "Worktree Management Flow",
       "nodes": [
-        "url_newURL",
-        "local_repository_LocalRepositoryFromURL",
-        "local_repository_localRepositoryRoots"
+        "worktree_isLinkedGitDir",
+        "worktree_isWorktreeGitDir",
+        "worktree_hasLinkedWorktrees",
+        "worktree_listLinkedWorktreePaths",
+        "worktree_resolveMainRepoDir",
+        "worktree_repairWorktreeBackPointers"
       ],
-      "relation": "url_to_local_path_resolution",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "description": "URL parsing and local repository path resolution pipeline"
+      "relation": "implement",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.9,
+      "source_file": "worktree.go"
     },
     {
+      "id": "remote_repository_dispatch",
+      "label": "Remote Repository Type Dispatch",
       "nodes": [
-        "cmd_rm_doRm",
-        "cmd_migrate_doMigrate",
-        "cmd_rm_confirm"
+        "remote_repository_NewRemoteRepository",
+        "remote_repository_GitHubRepository",
+        "remote_repository_OtherRepository",
+        "remote_repository_CodeCommitRepository",
+        "remote_repository_ChiselRepository"
       ],
-      "relation": "destructive_command_pattern",
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "remote_repository.go"
+    },
+    {
+      "id": "vcs_clone_worktree_layout",
+      "label": "VCS Clone Worktree Layout",
+      "nodes": [
+        "vcs_GitBackend",
+        "branch_detectDefaultBranch",
+        "cmd_migrate_worktree_doMigrateWorktree"
+      ],
+      "relation": "form",
       "confidence": "INFERRED",
       "confidence_score": 0.8,
-      "description": "Commands that modify filesystem with confirmation prompt pattern"
+      "source_file": "vcs.go"
+    },
+    {
+      "id": "cli_command_dispatch",
+      "label": "CLI Command Registration and Dispatch",
+      "nodes": [
+        "main_newApp",
+        "commands_commands",
+        "commands_commandGet",
+        "commands_commandList",
+        "commands_commandMigrate",
+        "commands_commandMigrateWorktree"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "commands.go"
+    },
+    {
+      "id": "repository_resolution_flow",
+      "label": "Repository Resolution Flow",
+      "nodes": [
+        "getter_getRemoteRepository",
+        "local_repository_LocalRepositoryFromURL",
+        "local_repository_getRoot",
+        "local_repository_walkLocalRepositories"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.9,
+      "source_file": "getter.go"
+    },
+    {
+      "id": "subprocess_execution_layer",
+      "label": "Subprocess Execution Layer",
+      "nodes": [
+        "cmdutil_Run",
+        "cmdutil_RunInDir",
+        "cmdutil_RunCommand",
+        "cmdutil_CommandRunner"
+      ],
+      "relation": "implement",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "cmdutil/run.go"
     }
   ]
 }
