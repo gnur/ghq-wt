@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/urfave/cli/v3"
-	"github.com/x-motemen/ghq/logger"
+	"github.com/gnur/ghq-wt/logger"
 )
 
 func doMigrateWorktree(ctx context.Context, cmd *cli.Command) error {

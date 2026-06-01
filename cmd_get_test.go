@@ -12,8 +12,8 @@ import (
 	"testing"
 
 	"github.com/Songmu/gitconfig"
-	"github.com/x-motemen/ghq/cmdutil"
-	"github.com/x-motemen/ghq/logger"
+	"github.com/gnur/ghq-wt/cmdutil"
+	"github.com/gnur/ghq-wt/logger"
 )
 
 func TestCommandGet(t *testing.T) {
@@ -316,11 +316,11 @@ func TestCommandGet_printPath(t *testing.T) {
 	}, {
 		name:       "bulk from stdin",
 		args:       []string{"", "get"},
-		inputRepos: []string{"github.com/x-motemen/ghq", "github.com/motemen/gore"},
+		inputRepos: []string{"github.com/gnur/ghq-wt", "github.com/motemen/gore"},
 	}, {
 		name:       "bulk parallel",
 		args:       []string{"", "get", "--parallel"},
-		inputRepos: []string{"github.com/x-motemen/ghq", "github.com/motemen/gore"},
+		inputRepos: []string{"github.com/gnur/ghq-wt", "github.com/motemen/gore"},
 	}}
 
 	for _, tc := range testCases {
@@ -499,7 +499,7 @@ func TestBareLook(t *testing.T) {
 
 func TestDoGet_bulk(t *testing.T) {
 	in := []string{
-		"github.com/x-motemen/ghq",
+		"github.com/gnur/ghq-wt",
 		"github.com/motemen/gore",
 	}
 

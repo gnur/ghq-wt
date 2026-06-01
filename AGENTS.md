@@ -4,7 +4,7 @@
 
 `ghq` is a CLI tool for managing local clones of remote repositories, organized under a root directory (like `go get` but for any VCS). Written in Go, uses `urfave/cli/v3`.
 
-Module path: `github.com/x-motemen/ghq`
+Module path: `github.com/gnur/ghq-wt`
 
 ## Commands
 

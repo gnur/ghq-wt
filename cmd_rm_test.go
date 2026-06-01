@@ -10,7 +10,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/x-motemen/ghq/cmdutil"
+	"github.com/gnur/ghq-wt/cmdutil"
 )
 
 func TestRmCommand(t *testing.T) {

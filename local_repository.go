@@ -12,7 +12,7 @@ import (
 
 	"github.com/Songmu/gitconfig"
 	"github.com/saracen/walker"
-	"github.com/x-motemen/ghq/logger"
+	"github.com/gnur/ghq-wt/logger"
 )
 
 const envGhqRoot = "GHQ_ROOT"

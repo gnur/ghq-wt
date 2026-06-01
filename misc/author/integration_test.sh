@@ -15,7 +15,7 @@ set -x
 export GHQ_ROOT=$tmpdir
 
 : testing 'ghq get'
-    ghq get x-motemen/ghq
+    ghq get gnur/ghq-wt
     ghq get www.mercurial-scm.org/repo/hello
     ghq get https://launchpad.net/shutter
     ghq get --vcs fossil https://www.sqlite.org/src
@@ -27,7 +27,7 @@ export GHQ_ROOT=$tmpdir
     ghq get --partial blobless x-motemen/blogsync
     ghq get --partial treeless x-motemen/gobump
 
-    test -d $tmpdir/github.com/x-motemen/ghq/.git
+    test -d $tmpdir/github.com/gnur/ghq-wt/.bare
     test -d $tmpdir/www.mercurial-scm.org/repo/hello/.hg
     test -d $tmpdir/launchpad.net/shutter/.bzr
     test -f $tmpdir/www.sqlite.org/src/.fslckout
@@ -43,7 +43,7 @@ export GHQ_ROOT=$tmpdir
     cat <<EOF | sort > $tmpdir/expect
 chiselapp.com/user/sti/repository/fossil-gui
 github.com/x-motemen/blogsync
-github.com/x-motemen/ghq
+github.com/gnur/ghq-wt/main
 github.com/x-motemen/gobump
 github.com/x-motemen/gore.git
 www.mercurial-scm.org/repo/hello

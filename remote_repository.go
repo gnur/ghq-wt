@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/Songmu/gitconfig"
-	"github.com/x-motemen/ghq/cmdutil"
-	"github.com/x-motemen/ghq/logger"
+	"github.com/gnur/ghq-wt/cmdutil"
+	"github.com/gnur/ghq-wt/logger"
 )
 
 // A RemoteRepository represents a remote repository.

@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/x-motemen/ghq/cmdutil"
+	"github.com/gnur/ghq-wt/cmdutil"
 )
 
 var (

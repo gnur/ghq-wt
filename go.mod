@@ -1,4 +1,4 @@
-module github.com/x-motemen/ghq
+module github.com/gnur/ghq-wt
 
 go 1.26.0
 

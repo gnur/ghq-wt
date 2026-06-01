@@ -11,7 +11,7 @@ import (
 
 	"github.com/otiai10/copy"
 	"github.com/urfave/cli/v3"
-	"github.com/x-motemen/ghq/logger"
+	"github.com/gnur/ghq-wt/logger"
 )
 
 func doMigrate(ctx context.Context, cmd *cli.Command) error {

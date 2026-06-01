@@ -1,7 +1,7 @@
 # ghq
 
-[![Build Status](https://github.com/x-motemen/ghq/workflows/test/badge.svg?branch=master)](https://github.com/x-motemen/ghq/actions?workflow=test)
-[![Coverage](https://codecov.io/gh/x-motemen/ghq/branch/master/graph/badge.svg)](https://codecov.io/gh/x-motemen/ghq)
+[![Build Status](https://github.com/gnur/ghq-wt/workflows/test/badge.svg?branch=master)](https://github.com/gnur/ghq-wt/actions?workflow=test)
+[![Coverage](https://codecov.io/gh/gnur/ghq-wt/branch/master/graph/badge.svg)](https://codecov.io/gh/gnur/ghq-wt)
 
 ## Name
 
@@ -14,10 +14,10 @@ ghq - Manage remote repository clones
 Git repositories are cloned using a **worktree layout** by default: a bare clone is placed in `.bare/` and the default branch is checked out as a git worktree. This allows you to have multiple branches checked out simultaneously under the same repository path.
 
 ```
-$ ghq get https://github.com/x-motemen/ghq
+$ ghq get https://github.com/gnur/ghq-wt
 # Creates:
-#   ~/ghq/github.com/x-motemen/ghq/.bare/   (bare clone)
-#   ~/ghq/github.com/x-motemen/ghq/main/    (worktree for default branch)
+#   ~/ghq/github.com/gnur/ghq-wt/.bare/   (bare clone)
+#   ~/ghq/github.com/gnur/ghq-wt/main/    (worktree for default branch)
 ```
 
 You can also list local repositories (`ghq list`).
@@ -83,7 +83,7 @@ Migrate an existing repository directory to the ghq-managed directory structure.
 Convert an existing git clone from standard layout (`.git` directory) to the worktree layout (`.bare/` + branch worktrees). The current branch becomes the first worktree.
 
 ```
-$ ghq migrate-worktree github.com/x-motemen/ghq
+$ ghq migrate-worktree github.com/gnur/ghq-wt
 # Converts:
 #   .git/           -> .bare/
 #   working files   -> main/   (or whatever the current branch is)
@@ -96,7 +96,7 @@ Use `--dry-run` to preview the migration without making changes.
 For Git repositories, `ghq get` uses a worktree-based layout by default:
 
 ```
-~/ghq/github.com/x-motemen/ghq/
+~/ghq/github.com/gnur/ghq-wt/
 ├── .bare/          # bare clone (shared object store)
 └── main/           # git worktree (default branch)
 ```
@@ -104,7 +104,7 @@ For Git repositories, `ghq get` uses a worktree-based layout by default:
 This allows multiple branches to be checked out simultaneously:
 
 ```
-~/ghq/github.com/x-motemen/ghq/
+~/ghq/github.com/gnur/ghq-wt/
 ├── .bare/
 ├── main/
 └── feature-xyz/    # additional worktree
@@ -113,7 +113,7 @@ This allows multiple branches to be checked out simultaneously:
 **Key behaviors:**
 
 - `ghq get` clones bare and creates a worktree for the default (or specified) branch
-- `ghq list` shows the worktree directories (e.g. `github.com/x-motemen/ghq/main`)
+- `ghq list` shows the worktree directories (e.g. `github.com/gnur/ghq-wt/main`)
 - `ghq get --update` fetches in the bare repo
 - `ghq get --bare` bypasses the worktree layout and does a traditional bare clone
 - Non-git VCS backends (hg, svn, bzr, etc.) clone as before (no worktree support)
@@ -121,7 +121,7 @@ This allows multiple branches to be checked out simultaneously:
 To convert an existing standard clone to the worktree layout:
 
 ```
-ghq migrate-worktree github.com/x-motemen/ghq
+ghq migrate-worktree github.com/gnur/ghq-wt
 ```
 
 ## Configuration
@@ -223,7 +223,7 @@ scoop install ghq
 ### go install
 
 ```
-go install github.com/x-motemen/ghq@latest
+go install github.com/gnur/ghq-wt@latest
 ```
 
 ### conda
@@ -249,11 +249,11 @@ mise use ghq
 ### Build from source
 
 ```
-git clone https://github.com/x-motemen/ghq .
+git clone https://github.com/gnur/ghq-wt .
 make install
 ```
 
-Built binaries are available from [GitHub Releases](https://github.com/x-motemen/ghq/releases).
+Built binaries are available from [GitHub Releases](https://github.com/gnur/ghq-wt/releases).
 
 ## Handbook
 

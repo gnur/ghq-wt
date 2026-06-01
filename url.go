@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	"github.com/Songmu/gitconfig"
-	"github.com/x-motemen/ghq/logger"
+	"github.com/gnur/ghq-wt/logger"
 )
 
 // Convert SCP-like URL to SSH URL(e.g. [user@]host.xz:path/to/repo.git/)
