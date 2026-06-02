@@ -1,5 +1,7 @@
 # Changelog
 
+## [v3.0.0](https://github.com/gnur/ghq-wt/compare/v3.0.2...v3.0.0) - 2026-06-02
+
 ## [v1.10.1](https://github.com/gnur/ghq-wt/compare/v3.0.2...v1.10.1) - 2026-06-02
 
 ## [v1.10.1](https://github.com/x-motemen/ghq/compare/v1.10.0...v1.10.1) - 2026-04-11
