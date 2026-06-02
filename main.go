@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/urfave/cli/v3"
 	"github.com/gnur/ghq-wt/logger"
+	"github.com/urfave/cli/v3"
 )
 
-const version = "1.10.1"
+const version = "3.0.0"
 
 var revision = "HEAD"
 
