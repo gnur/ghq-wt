@@ -61,9 +61,7 @@ func TestDoList_query(t *testing.T) {
 		"golang.org/x/crypt",
 		"golang.org/x/image",
 	}
-	svnRepos := []string{
-		"github.com/msh5/svntest",
-	}
+	svnRepos := []string{}
 	testCases := []struct {
 		name   string
 		args   []string
@@ -104,10 +102,6 @@ func TestDoList_query(t *testing.T) {
 		name:   "exact query",
 		args:   []string{"-exact", "men/go"},
 		expect: "",
-	}, {
-		name:   "vcs",
-		args:   []string{"--vcs", "svn"},
-		expect: "github.com/msh5/svntest\n",
 	}, {
 		name:   "smartcasing fuzzy",
 		args:   []string{"awesome"},

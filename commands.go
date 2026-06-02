@@ -35,7 +35,6 @@ var commandGet = &cli.Command{
 		&cli.BoolFlag{Name: "p", Usage: "Clone with SSH"},
 		&cli.BoolFlag{Name: "shallow", Usage: "Do a shallow clone"},
 		&cli.BoolFlag{Name: "look", Aliases: []string{"l"}, Usage: "Look after get"},
-		&cli.StringFlag{Name: "vcs", Usage: "Specify `vcs` backend for cloning"},
 		&cli.BoolFlag{Name: "silent", Aliases: []string{"s"}, Usage: "clone or update silently"},
 		&cli.BoolFlag{Name: "no-recursive", Usage: "prevent recursive fetching"},
 		&cli.StringFlag{Name: "branch", Aliases: []string{"b"},
@@ -67,7 +66,6 @@ var commandList = &cli.Command{
 	Action: doList,
 	Flags: []cli.Flag{
 		&cli.BoolFlag{Name: "exact", Aliases: []string{"e"}, Usage: "Perform an exact match"},
-		&cli.StringFlag{Name: "vcs", Usage: "Specify `vcs` backend for matching"},
 		&cli.BoolFlag{Name: "full-path", Aliases: []string{"p"}, Usage: "Print full paths"},
 		&cli.BoolFlag{Name: "unique", Usage: "Print unique subpaths"},
 		&cli.BoolFlag{Name: "bare", Usage: "Query bare repositories"},
@@ -98,7 +96,6 @@ var commandCreate = &cli.Command{
 	Usage:  "Create a new repository",
 	Action: doCreate,
 	Flags: []cli.Flag{
-		&cli.StringFlag{Name: "vcs", Usage: "Specify `vcs` backend explicitly"},
 		&cli.BoolFlag{Name: "bare", Usage: "Create a bare repository"},
 	},
 }
@@ -109,7 +106,7 @@ type commandDoc struct {
 }
 
 var commandDocs = map[string]commandDoc{
-	"get":              {"", "[-u] [-p] [--shallow] [--vcs <vcs>] [--look] [--silent] [--branch <branch>] [--no-recursive] [--bare] [--partial blobless|treeless] <repository URL>|<project>|<user>/<project>|<host>/<user>/<project>"},
+	"get":              {"", "[-u] [-p] [--shallow] [--look] [--silent] [--branch <branch>] [--no-recursive] [--bare] [--partial blobless|treeless] <repository URL>|<project>|<user>/<project>|<host>/<user>/<project>"},
 	"list":             {"", "[-p] [-e] [<query>]"},
 	"create":           {"", "<project>|<user>/<project>|<host>/<user>/<project>"},
 	"rm":               {"", "<project>|<user>/<project>|<host>/<user>/<project>"},

@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"errors"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -55,43 +54,6 @@ func TestDoCreate(t *testing.T) {
 			os.MkdirAll(filepath.Join(tmpd, "github.com/motemen/ghqqq"), 0755)
 		},
 		wantDir: filepath.Join(tmpd, "github.com/motemen/ghqqq"),
-	}, {
-		name:  "invalid VCS",
-		input: []string{"create", "example.com/goooo/gooo"},
-		cmdRun: func(cmd *exec.Cmd) error {
-			lastCmd = cmd
-			return errors.New("bad repository")
-		},
-		errStr: "unsupported VCS",
-	}, {
-		name:    "Mercurial",
-		input:   []string{"create", "--vcs=hg", "motemen/ghq-hg"},
-		want:    []string{"hg", "init"},
-		wantDir: filepath.Join(tmpd, "github.com/motemen/ghq-hg"),
-	}, {
-		name:    "Darcs",
-		input:   []string{"create", "--vcs=darcs", "motemen/ghq-darcs"},
-		want:    []string{"darcs", "init"},
-		wantDir: filepath.Join(tmpd, "github.com/motemen/ghq-darcs"),
-	}, {
-		name:    "Pijul",
-		input:   []string{"create", "--vcs=pijul", "motemen/ghq-pijul"},
-		want:    []string{"pijul", "init"},
-		wantDir: filepath.Join(tmpd, "github.com/motemen/ghq-pijul"),
-	}, {
-		name:    "Bazzar",
-		input:   []string{"create", "--vcs=bzr", "motemen/ghq-bzr"},
-		want:    []string{"bzr", "init"},
-		wantDir: filepath.Join(tmpd, "github.com/motemen/ghq-bzr"),
-	}, {
-		name:    "Fossil",
-		input:   []string{"create", "--vcs=fossil", "motemen/ghq-fossil"},
-		want:    []string{"fossil", "open", fossilRepoName},
-		wantDir: filepath.Join(tmpd, "github.com/motemen/ghq-fossil"),
-	}, {
-		name:   "unsupported VCS",
-		input:  []string{"create", "--vcs=svn", "motemen/ghq-svn"},
-		errStr: "unsupported VCS",
 	}, {
 		name:  "not permitted",
 		input: []string{"create", "motemen/ghq-notpermitted"},

@@ -16,7 +16,7 @@ func doList(ctx context.Context, cmd *cli.Command) error {
 		w                = cmd.Root().Writer
 		query            = cmd.Args().First()
 		exact            = cmd.Bool("exact")
-		vcsBackend       = cmd.String("vcs")
+		vcsBackend       = ""
 		printFullPaths   = cmd.Bool("full-path")
 		printUniquePaths = cmd.Bool("unique")
 		bare             = cmd.Bool("bare")

@@ -31,7 +31,7 @@ func doGet(ctx context.Context, cmd *cli.Command) error {
 		update:    cmd.Bool("update"),
 		shallow:   cmd.Bool("shallow"),
 		ssh:       cmd.Bool("p"),
-		vcs:       cmd.String("vcs"),
+		vcs:       "",
 		silent:    silent,
 		branch:    cmd.String("branch"),
 		recursive: !cmd.Bool("no-recursive"),

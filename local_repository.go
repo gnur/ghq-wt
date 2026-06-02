@@ -232,27 +232,11 @@ func (repo *LocalRepository) VCS() (*VCSBackend, string) {
 }
 
 var vcsContentsMap = map[string]*VCSBackend{
-	".git":           GitBackend,
-	".hg":            MercurialBackend,
-	".svn":           SubversionBackend,
-	"_darcs":         DarcsBackend,
-	".pijul":         PijulBackend,
-	".bzr":           BazaarBackend,
-	".fslckout":      FossilBackend, // file
-	"_FOSSIL_":       FossilBackend, // file
-	"CVS/Repository": cvsDummyBackend,
+	".git": GitBackend,
 }
 
 var vcsContents = [...]string{
 	".git",
-	".hg",
-	".svn",
-	"_darcs",
-	".pijul",
-	".bzr",
-	".fslckout",
-	"._FOSSIL_",
-	"CVS/Repository",
 }
 
 func findVCSBackend(fpath, vcs string) *VCSBackend {

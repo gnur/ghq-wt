@@ -3,12 +3,9 @@ package main
 import (
 	"fmt"
 	"net/url"
-	"regexp"
 	"strings"
 
-	"github.com/Songmu/gitconfig"
 	"github.com/gnur/ghq-wt/cmdutil"
-	"github.com/gnur/ghq-wt/logger"
 )
 
 // A RemoteRepository represents a remote repository.
@@ -34,7 +31,6 @@ func (repo *GitHubRepository) URL() *url.URL {
 // IsValid determine if the repository is valid or not
 func (repo *GitHubRepository) IsValid() bool {
 	if strings.HasPrefix(repo.url.Path, "/blog/") {
-		logger.Log("github", `the user or organization named "blog" is invalid on github, "https://github.com/blog" is redirected to "https://github.blog".`)
 		return false
 	}
 	pathComponents := strings.Split(strings.Trim(repo.url.Path, "/"), "/")
@@ -73,86 +69,6 @@ func (repo *GitHubGistRepository) VCS() (*VCSBackend, *url.URL, error) {
 	return GitBackend, repo.URL(), nil
 }
 
-// DarksHubRepository represents DarcsHub Repository
-type DarksHubRepository struct {
-	url *url.URL
-}
-
-// URL returns URL of darks repository
-func (repo *DarksHubRepository) URL() *url.URL {
-	return repo.url
-}
-
-// IsValid determine if the DarcsHub repository is valid or not
-func (repo *DarksHubRepository) IsValid() bool {
-	return strings.Count(repo.url.Path, "/") == 2
-}
-
-// VCS returns VCSBackend of the DarcsHub repository
-func (repo *DarksHubRepository) VCS() (*VCSBackend, *url.URL, error) {
-	return DarcsBackend, repo.URL(), nil
-}
-
-// NestPijulRepository represents the Nest repository
-type NestPijulRepository struct {
-	url *url.URL
-}
-
-// URL returns URL of the Nest repository
-func (repo *NestPijulRepository) URL() *url.URL {
-	return repo.url
-}
-
-// IsValid determine if the Nest repository is valid or not
-func (repo *NestPijulRepository) IsValid() bool {
-	return strings.Count(repo.url.Path, "/") == 2
-}
-
-// VCS returns VCSBackend of the Nest repository
-func (repo *NestPijulRepository) VCS() (*VCSBackend, *url.URL, error) {
-	return PijulBackend, repo.URL(), nil
-}
-
-// A CodeCommitRepository represents a CodeCommit repository. Implements RemoteRepository.
-type CodeCommitRepository struct {
-	url *url.URL
-}
-
-// URL returns URL of the repository
-func (repo *CodeCommitRepository) URL() *url.URL {
-	return repo.url
-}
-
-// IsValid determine if the repository is valid or not
-func (repo *CodeCommitRepository) IsValid() bool {
-	return true
-}
-
-// VCS returns VCSBackend of the repository
-func (repo *CodeCommitRepository) VCS() (*VCSBackend, *url.URL, error) {
-	u := *repo.url
-	return GitBackend, &u, nil
-}
-
-type ChiselRepository struct {
-	url *url.URL
-}
-
-// URL returns URL of the repository
-func (repo *ChiselRepository) URL() *url.URL {
-	return repo.url
-}
-
-// IsValid determine if the repository is valid or not
-func (repo *ChiselRepository) IsValid() bool {
-	return true
-}
-
-// VCS returns VCSBackend of the repository
-func (repo *ChiselRepository) VCS() (*VCSBackend, *url.URL, error) {
-	return FossilBackend, repo.URL(), nil
-}
-
 // OtherRepository represents other repository
 type OtherRepository struct {
 	url *url.URL
@@ -168,87 +84,35 @@ func (repo *OtherRepository) IsValid() bool {
 	return true
 }
 
-var (
-	vcsSchemeReg = regexp.MustCompile(`^(git|svn|bzr|codecommit)(?:\+|$)`)
-	scheme2vcs   = map[string]*VCSBackend{
-		"git":        GitBackend,
-		"codecommit": GitBackend,
-		"svn":        SubversionBackend,
-		"bzr":        BazaarBackend,
-	}
-)
-
 // VCS detects VCSBackend of the OtherRepository
 func (repo *OtherRepository) VCS() (*VCSBackend, *url.URL, error) {
-	// Respect 'ghq.url.https://ghe.example.com/.vcs' config variable
-	// (in gitconfig:)
-	//     [ghq "https://ghe.example.com/"]
-	//     vcs = github
-	vcs, err := gitconfig.Do("--path", "--get-urlmatch", "ghq.vcs", repo.URL().String())
-	if err != nil && !gitconfig.IsNotFound(err) {
-		logger.Log("error", err.Error())
-	}
-	if backend, ok := vcsRegistry[vcs]; ok {
-		return backend, repo.URL(), nil
-	}
-
-	if m := vcsSchemeReg.FindStringSubmatch(repo.url.Scheme); len(m) > 1 {
-		return scheme2vcs[m[1]], repo.URL(), nil
-	}
-
-	mayBeSvn := strings.HasPrefix(repo.url.Host, "svn.")
-	if mayBeSvn && cmdutil.RunSilently("svn", "info", repo.url.String()) == nil {
-		return SubversionBackend, repo.URL(), nil
-	}
-
 	// Detect VCS backend
 	if repo.url.Scheme == "ssh" && repo.url.User.Username() == "git" {
 		return GitBackend, repo.URL(), nil
-	}
-
-	switch repo.url.Host {
-	case "fossil-scm.org", "sqlite.org":
-		return FossilBackend, repo.URL(), nil
 	}
 
 	if cmdutil.RunSilently("git", "ls-remote", repo.url.String()) == nil {
 		return GitBackend, repo.URL(), nil
 	}
 
-	vcs, repoURL, err := detectGoImport(repo.url)
+	vcsStr, repoURL, err := detectGoImport(repo.url)
 	if err == nil {
-		// vcs == "mod" (modproxy) not supported yet
-		return vcsRegistry[vcs], repoURL, nil
+		if backend, ok := vcsRegistry[vcsStr]; ok {
+			return backend, repoURL, nil
+		}
 	}
 
-	if cmdutil.RunSilently("hg", "identify", repo.url.String()) == nil {
-		return MercurialBackend, repo.URL(), nil
-	}
-
-	if !mayBeSvn && cmdutil.RunSilently("svn", "info", repo.url.String()) == nil {
-		return SubversionBackend, repo.URL(), nil
-	}
-
-	return nil, nil, fmt.Errorf("unsupported VCS, url=%s: %w", repo.URL(), err)
+	return nil, nil, fmt.Errorf("unsupported VCS, url=%s: could not detect git repository", repo.URL())
 }
 
 // NewRemoteRepository returns new RemoteRepository object from URL
 func NewRemoteRepository(u *url.URL) (RemoteRepository, error) {
 	repo := func() RemoteRepository {
-		if u.Scheme == "codecommit" {
-			return &CodeCommitRepository{u}
-		}
 		switch u.Host {
 		case "github.com":
 			return &GitHubRepository{u}
 		case "gist.github.com":
 			return &GitHubGistRepository{u}
-		case "hub.darcs.net":
-			return &DarksHubRepository{u}
-		case "nest.pijul.com":
-			return &NestPijulRepository{u}
-		case "chiselapp.com":
-			return &ChiselRepository{u}
 		default:
 			return &OtherRepository{u}
 		}

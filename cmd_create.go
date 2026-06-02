@@ -12,7 +12,6 @@ import (
 func doCreate(ctx context.Context, cmd *cli.Command) error {
 	var (
 		name = cmd.Args().First()
-		vcs  = cmd.String("vcs")
 		w    = cmd.Root().Writer
 		bare = cmd.Bool("bare")
 	)
@@ -40,32 +39,11 @@ func doCreate(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("directory %q already exists and not empty", p)
 	}
 
-	remoteRepo, err := NewRemoteRepository(u)
-	if err != nil {
-		return err
-	}
-
-	vcsBackend, ok := vcsRegistry[vcs]
-	if !ok {
-		vcsBackend, _, err = remoteRepo.VCS()
-		if err != nil {
-			return err
-		}
-	}
-	if vcsBackend == nil {
-		return fmt.Errorf("failed to init: unsupported VCS")
-	}
-
-	initFunc := vcsBackend.Init
-	if initFunc == nil {
-		return fmt.Errorf("failed to init: unsupported VCS")
-	}
-
 	if err := os.MkdirAll(p, 0755); err != nil {
 		return err
 	}
 
-	if err := initFunc(p); err != nil {
+	if err := GitBackend.Init(p); err != nil {
 		return err
 	}
 	_, err = fmt.Fprintln(w, p)

@@ -290,23 +290,18 @@ func TestMigrateEdgeCases(t *testing.T) {
 	})
 
 	t.Run("unsupported_vcs", func(t *testing.T) {
-		// Create a CVS repository structure to test unsupported VCS
+		// Create a directory without any recognized VCS
 		srcdir := filepath.Join(tmpdir, "src6", "cvs-repo")
-		cvsDir := filepath.Join(srcdir, "CVS")
-		os.MkdirAll(cvsDir, 0755)
-
-		// Create a minimal CVS/Repository file
-		repoFile := filepath.Join(cvsDir, "Repository")
-		os.WriteFile(repoFile, []byte("test-repo\n"), 0644)
+		os.MkdirAll(srcdir, 0755)
 
 		a := newApp()
 		e := a.Run(context.Background(), []string{"ghq", "migrate", "-y", srcdir})
 		if e == nil {
-			t.Error("should fail for unsupported VCS (CVS)")
+			t.Error("should fail for unrecognized VCS")
 		}
-		// Check that the error message mentions unsupported VCS
-		if e != nil && !strings.Contains(e.Error(), "not supported") {
-			t.Errorf("expected 'not supported' error, got: %v", e)
+		// Check that the error message mentions failed detection
+		if e != nil && !strings.Contains(e.Error(), "failed to detect VCS backend") {
+			t.Errorf("expected 'failed to detect VCS backend' error, got: %v", e)
 		}
 	})
 }

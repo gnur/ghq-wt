@@ -31,18 +31,6 @@ func TestNewRemoteRepository(t *testing.T) {
 		url:        "https://gist.github.com/motemen/9733745",
 		valid:      true,
 		vcsBackend: GitBackend,
-	}, {
-		url:        "http://hub.darcs.net/foo/bar",
-		valid:      true,
-		vcsBackend: DarcsBackend,
-	}, {
-		url:        "http://nest.pijul.com/foo/bar",
-		valid:      true,
-		vcsBackend: PijulBackend,
-	}, {
-		url:        "svn+ssh://example.com/proj/repo",
-		valid:      true,
-		vcsBackend: SubversionBackend,
 	}}
 
 	for _, tc := range testCases {
