@@ -22,14 +22,14 @@ export GHQ_ROOT=$tmpdir
 
     test -d $tmpdir/github.com/gnur/ghq-wt/.bare
     test -d $tmpdir/github.com/x-motemen/gore.git/refs
-    grep --quiet "partialclonefilter = blob:none" $tmpdir/github.com/x-motemen/blogsync/.git/config
-    grep --quiet "partialclonefilter = tree:0" $tmpdir/github.com/x-motemen/gobump/.git/config
+    grep --quiet "partialclonefilter = blob:none" $tmpdir/github.com/x-motemen/blogsync/.bare/config
+    grep --quiet "partialclonefilter = tree:0" $tmpdir/github.com/x-motemen/gobump/.bare/config
 
 : testing 'ghq list'
     cat <<EOF | sort > $tmpdir/expect
-github.com/x-motemen/blogsync
+github.com/x-motemen/blogsync/master
 github.com/gnur/ghq-wt/master
-github.com/x-motemen/gobump
+github.com/x-motemen/gobump/master
 github.com/x-motemen/gore.git
 EOF
     ghq list | sort > $tmpdir/got
